@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Riffhub - Create Event</title>
+  <link rel="icon" type="image/x-icon" href="static/img/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="static/style/styles.css" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="bg-dark py-3 shadow">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand fs-2 fw-bold text-primary" href="index.html">Riffhub</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="user_details.html">Account</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="p-5 mb-auto">
+    <div class="d-flex align-items-center justify-content-between w-75 mx-auto">
+      <h1>Create Event</h1>
+      <div>
+        <a href="index.html" class="btn btn-secondary">Cancel</a>
+        <button type="submit" form="eventForm" class="btn btn-success">
+          Create Event
+        </button>
+      </div>
+    </div>
+
+    <form id="eventForm" action="event_details.html" method="post">
+      <div class="container">
+        <div class="row">
+          <!-- Left column - takes full width on small screens, half on medium and up -->
+          <div class="col-12 col-md-5 mb-4">
+            <div class="border rounded-2 p-3">
+              <h3 class="mb-3">Event Basics</h3>
+
+              <div class="mb-3">
+                <label for="eventTitle" class="form-label">Event Title</label>
+                <input type="text" class="form-control" id="eventTitle" name="eventTitle"
+                  placeholder="Enter event title" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="eventImage" class="form-label">Event Image</label>
+                <input type="file" class="form-control" id="eventImage" name="eventImage" accept="image/*" />
+              </div>
+
+              <div class="text-center mb-3">
+                <img src="static/img/example_photo.jpg" class="img-fluid rounded-2 preview-image"
+                  style="max-height: 300px" />
+                <p class="text-muted small">Preview image</p>
+              </div>
+
+              <div class="mb-3">
+                <label for="venueLocation" class="form-label">Venue Location</label>
+                <input type="text" class="form-control" id="venueLocation" name="venueLocation"
+                  placeholder="The Venue, 123 Main St" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column - takes full width on small screens, half on medium and up -->
+          <div class="col-12 col-md-7">
+            <div class="border rounded-2 p-3">
+              <!-- Description -->
+              <h3 class="mb-3">Event Details</h3>
+
+              <div class="mb-3">
+                <label for="eventDescription" class="form-label">Event Description</label>
+                <textarea class="form-control" id="eventDescription" name="eventDescription" rows="4"
+                  placeholder="Enter event description" required></textarea>
+              </div>
+
+              <!-- Event Date -->
+              <div class="mb-3">
+                <label for="eventDate" class="form-label">Event Date</label>
+                <input type="date" class="form-control" id="eventDate" name="eventDate" required />
+              </div>
+
+              <!-- Price -->
+              <div class="mb-3">
+                <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
+                <input type="number" class="form-control" id="ticketPrice" name="ticketPrice" min="0" step="0.01"
+                  placeholder="99.00" required />
+              </div>
+
+              <!-- Capacity -->
+              <div class="mb-3">
+                <label for="capacity" class="form-label">Maximum Capacity</label>
+                <input type="number" class="form-control" id="capacity" name="capacity" min="1" placeholder="150"
+                  required />
+              </div>
+
+              <!-- Genres Section -->
+              <h5 class="mb-3">Event Genres</h5>
+              <div class="mb-4">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreRock" name="genres[]" value="Rock" />
+                  <label class="form-check-label" for="genreRock">Rock</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreAlternative" name="genres[]"
+                    value="Alternative" />
+                  <label class="form-check-label" for="genreAlternative">Alternative</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreIndie" name="genres[]" value="Indie" />
+                  <label class="form-check-label" for="genreIndie">Indie</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreMetal" name="genres[]" value="Metal" />
+                  <label class="form-check-label" for="genreMetal">Metal</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genrePop" name="genres[]" value="Pop" />
+                  <label class="form-check-label" for="genrePop">Pop</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreJazz" name="genres[]" value="Jazz" />
+                  <label class="form-check-label" for="genreJazz">Jazz</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="genreHipHop" name="genres[]" value="HipHop" />
+                  <label class="form-check-label" for="genreHipHop">Hip Hop</label>
+                </div>
+              </div>
+
+              <!-- Featured Acts Section -->
+              <h5 class="mb-3">Featured Acts</h5>
+
+              <!-- Band list display with max height for scrolling if needed -->
+              <div class="mb-3">
+                <ul class="list-group rounded-2" id="bandList" style="max-height: 300px; overflow-y: auto">
+                  <!-- Placeholder for added bands - will be populated via JavaScript -->
+                </ul>
+              </div>
+
+              <!-- Add band button -->
+              <div class="mb-3">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                  data-bs-target="#addBandModal">
+                  <i class="bi bi-plus-lg"></i> Add Band
+                </button>
+              </div>
+
+              <!-- Hidden input to store band list as JSON -->
+              <input type="hidden" id="bandListData" name="bandListData" value="[]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Add Band Modal -->
+  <div class="modal fade" id="addBandModal" tabindex="-1" aria-labelledby="addBandModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addBandModalLabel">Add Band Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bandForm">
+            <div class="row">
+              <!-- Left column -->
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="bandName" class="form-label">Band Name</label>
+                  <input type="text" class="form-control" id="bandName" required />
+                </div>
+
+                <div class="mb-3">
+                  <label for="bandTitle" class="form-label">Band Title/Role</label>
+                  <input type="text" class="form-control" id="bandTitle" placeholder="Headliner, Opening Act, etc." />
+                </div>
+
+                <div class="mb-3">
+                  <label for="bandImage" class="form-label">Band Image</label>
+                  <input type="file" class="form-control" id="bandImage" accept="image/*" />
+                </div>
+
+                <div class="text-center mb-3">
+                  <img src="static/img/example_photo.jpg" class="img-fluid rounded-2 band-preview-image"
+                    style="max-height: 200px" />
+                  <p class="text-muted small">Preview image</p>
+                </div>
+              </div>
+
+              <!-- Right column -->
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Band Genre(s)</label>
+                  <div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreRock" value="Rock" />
+                      <label class="form-check-label" for="bandGenreRock">Rock</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreAlternative" value="Alternative" />
+                      <label class="form-check-label" for="bandGenreAlternative">Alternative</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreIndie" value="Indie" />
+                      <label class="form-check-label" for="bandGenreIndie">Indie</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreMetal" value="Metal" />
+                      <label class="form-check-label" for="bandGenreMetal">Metal</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenrePop" value="Pop" />
+                      <label class="form-check-label" for="bandGenrePop">Pop</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreJazz" value="Jazz" />
+                      <label class="form-check-label" for="bandGenreJazz">Jazz</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="bandGenreHipHop" value="Hip Hop" />
+                      <label class="form-check-label" for="bandGenreHipHop">Hip Hop</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="bandDescription" class="form-label">Band Description</label>
+                  <textarea class="form-control" id="bandDescription" rows="5"
+                    placeholder="Enter band description"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" id="saveBandButton">
+            Add Band
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Band Details Modal -->
+  <div class="modal fade" id="bandDetailsModal" tabindex="-1" aria-labelledby="bandDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bandDetailsModalLabel">Band Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="bandDetailsModalBody">
+          <!-- Content will be dynamically populated -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3">Riffhub</h5>
+          <p class="mb-0">
+            Your ultimate destination for live music events and concerts.
+          </p>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">About Us</a>
+            </li>
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">Contact</a>
+            </li>
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">FAQ</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5 class="mb-3">Follow Us</h5>
+          <div class="d-flex">
+            <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/mitchell.roemling.1/"
+              class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/mitchellroemling/"
+              class="text-white me-3"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4" />
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 Riffhub. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Initialize elements
+      const bandList = document.getElementById("bandList");
+      const bandListData = document.getElementById("bandListData");
+      const saveBandButton = document.getElementById("saveBandButton");
+      const bandImageInput = document.getElementById("bandImage");
+      const bandPreviewImage = document.querySelector(".band-preview-image");
+      const eventImageInput = document.getElementById("eventImage");
+      const eventPreviewImage = document.querySelector(".preview-image");
+      const addBandModal = new bootstrap.Modal(
+        document.getElementById("addBandModal")
+      );
+
+      // Initialize bands array
+      let bands = [];
+
+      // Preview event image
+      eventImageInput.addEventListener("change", function () {
+        previewImage(this, eventPreviewImage);
+      });
+
+      // Preview band image
+      bandImageInput.addEventListener("change", function () {
+        previewImage(this, bandPreviewImage);
+      });
+
+      // Function to preview uploaded images
+      function previewImage(input, previewElement) {
+        const file = input.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            previewElement.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      // Function to get checked genres
+      function getCheckedGenres(prefix) {
+        const genres = [];
+        document
+          .querySelectorAll(`input[id^="${prefix}"]:checked`)
+          .forEach((checkbox) => {
+            genres.push(checkbox.value);
+          });
+        return genres;
+      }
+
+      // Function to save band details
+      saveBandButton.addEventListener("click", function () {
+        const bandName = document.getElementById("bandName").value.trim();
+        const bandTitle = document.getElementById("bandTitle").value.trim();
+        const bandDescription = document
+          .getElementById("bandDescription")
+          .value.trim();
+        const bandGenres = getCheckedGenres("bandGenre");
+
+        // Validate band name
+        if (!bandName) {
+          alert("Please enter a band name");
+          return;
+        }
+
+        // Get band image data
+        let bandImageData = null;
+        if (bandImageInput.files.length > 0) {
+          bandImageData = bandPreviewImage.src;
+        } else {
+          bandImageData = "static/img/example_photo.jpg";
+        }
+
+        // Create band object
+        const band = {
+          name: bandName,
+          title: bandTitle || "Performer",
+          description: bandDescription || "No description provided.",
+          genres: bandGenres.length ? bandGenres : ["Unspecified"],
+          image: bandImageData,
+        };
+
+        // Add band to array
+        bands.push(band);
+
+        // Update hidden input
+        bandListData.value = JSON.stringify(bands);
+
+        // Create list item
+        addBandToList(band);
+
+        // Reset form and close modal
+        document.getElementById("bandForm").reset();
+        bandPreviewImage.src = "static/img/example_photo.jpg";
+        addBandModal.hide();
+      });
+
+      // Function to add band to list
+      function addBandToList(band) {
+        const listItem = document.createElement("li");
+        listItem.className =
+          "list-group-item d-flex justify-content-between align-items-center";
+
+        // Create band info container
+        const bandInfo = document.createElement("div");
+        bandInfo.className = "d-flex align-items-center";
+
+        // Create thumbnail (small version of band image)
+        const thumbnail = document.createElement("img");
+        thumbnail.src = band.image;
+        thumbnail.alt = band.name;
+        thumbnail.className = "rounded-circle me-3";
+        thumbnail.style.width = "40px";
+        thumbnail.style.height = "40px";
+        thumbnail.style.objectFit = "cover";
+
+        // Create band text info
+        const textInfo = document.createElement("div");
+
+        // Band name with title
+        const nameElement = document.createElement("strong");
+        nameElement.textContent = band.name;
+        if (band.title) {
+          const titleSpan = document.createElement("span");
+          titleSpan.className = "text-muted ms-2";
+          titleSpan.textContent = `(${band.title})`;
+          nameElement.appendChild(titleSpan);
+        }
+        textInfo.appendChild(nameElement);
+
+        // Genres as badges
+        if (band.genres && band.genres.length) {
+          const genresDiv = document.createElement("div");
+          genresDiv.className = "mt-1";
+
+          band.genres.forEach((genre) => {
+            const badge = document.createElement("span");
+            badge.className = "badge bg-secondary me-1";
+            badge.textContent = genre;
+            genresDiv.appendChild(badge);
+          });
+
+          textInfo.appendChild(genresDiv);
+        }
+
+        // Add elements to band info container
+        bandInfo.appendChild(thumbnail);
+        bandInfo.appendChild(textInfo);
+
+        // Create buttons container
+        const buttonsContainer = document.createElement("div");
+
+        // View details button
+        const viewButton = document.createElement("button");
+        viewButton.type = "button";
+        viewButton.className = "btn btn-sm btn-outline-primary me-2";
+        viewButton.innerHTML = '<i class="bi bi-eye"></i>';
+        viewButton.addEventListener("click", function () {
+          showBandDetails(band);
+        });
+
+        // Delete button
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "btn btn-sm btn-outline-danger";
+        deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+        deleteButton.addEventListener("click", function () {
+          removeBand(band.name);
+          bandList.removeChild(listItem);
+        });
+
+        // Add buttons to container
+        buttonsContainer.appendChild(viewButton);
+        buttonsContainer.appendChild(deleteButton);
+
+        // Add content to list item
+        listItem.appendChild(bandInfo);
+        listItem.appendChild(buttonsContainer);
+
+        // Add to band list
+        bandList.appendChild(listItem);
+      }
+
+      // Function to show band details
+      function showBandDetails(band) {
+        const modalBody = document.getElementById("bandDetailsModalBody");
+
+        let genresHTML = "";
+        if (band.genres && band.genres.length) {
+          genresHTML = band.genres
+            .map(
+              (genre) =>
+                `<span class="badge bg-secondary me-1">${genre}</span>`
+            )
+            .join("");
+        }
+
+        modalBody.innerHTML = `
+            <div class="row">
+              <div class="col-md-4 text-center">
+                <img src="${band.image}" alt="${band.name}" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                <h5>${band.name}</h5>
+                <p class="text-muted">${band.title}</p>
+                <div>${genresHTML}</div>
+              </div>
+              <div class="col-md-8">
+                <h5>About</h5>
+                <p>${band.description}</p>
+              </div>
+            </div>
+          `;
+
+        const bandDetailsModal = new bootstrap.Modal(
+          document.getElementById("bandDetailsModal")
+        );
+        bandDetailsModal.show();
+      }
+
+      // Function to remove a band from the array
+      function removeBand(bandName) {
+        bands = bands.filter((band) => band.name !== bandName);
+        bandListData.value = JSON.stringify(bands);
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Riffhub - Home</title>
+  <link rel="icon" type="image/x-icon" href="static/img/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="static/style/styles.css" />
+</head>
+
+<body class="bg-light">
+  <!-- Header -->
+  <header class="bg-dark py-3 shadow">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand fs-2 fw-bold text-primary" href="index.html">Riffhub</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="user_details.html">Account</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="bg-dark text-white pb-5 mb-4">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold">Discover Amazing Events</h1>
+      <p class="lead">
+        Find and book tickets for the best music events in your area
+      </p>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="container mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-3">
+            <h5 class="card-title mb-md-0">Filter by Genre:</h5>
+          </div>
+          <div class="col-md-4">
+            <select class="form-select" id="genre-filter">
+              <option value="all" selected>All Genres</option>
+              <option value="rock">Rock</option>
+              <option value="jazz">Jazz</option>
+              <option value="electronic">Electronic</option>
+              <option value="hiphop">Hip Hop</option>
+              <option value="classical">Classical</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mb-5">
+    <div class="row g-4" id="events-container">
+      <!-- Rock Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="rock">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Rock</span>
+            <img src="https://picsum.photos/seed/rock1/400/240" class="card-img-top" alt="Rock Concert" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Downtown Rockers</h5>
+              <p class="card-text mb-4">
+                An explosive night of rock classics and new hits featuring
+                local bands. Don't miss this adrenaline-pumping lineup!
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Apr 15, 2025</span>
+                  <span class="text-primary fw-bold">$45</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Jazz Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="jazz">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-secondary position-absolute top-0 end-10 m-3">Inactive</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Jazz</span>
+            <img src="https://picsum.photos/seed/jazz1/400/240" class="card-img-top" alt="Jazz Night" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Smooth Jazz Night</h5>
+              <p class="card-text mb-4">
+                Experience a sophisticated evening of smooth jazz with
+                award-winning musicians in an intimate venue setting.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jan 20, 2025</span>
+                  <span class="text-primary fw-bold">$65</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Electronic Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="electronic">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-warning text-dark position-absolute top-0 end-10 m-3">Sold Out</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Electronic</span>
+            <img src="https://picsum.photos/seed/electronic1/400/240" class="card-img-top" alt="EDM Festival" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Electric Dreams Festival</h5>
+              <p class="card-text mb-4">
+                The biggest electronic music festival of the year featuring
+                world-class DJs and spectacular light shows.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>May 5, 2025</span>
+                  <span class="text-primary fw-bold">$120</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hip Hop Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="hiphop">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Hip Hop</span>
+            <img src="https://picsum.photos/seed/hiphop1/400/240" class="card-img-top" alt="Hip Hop Concert" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Beats & Rhymes</h5>
+              <p class="card-text mb-4">
+                The hottest hip hop showcase featuring breakthrough artists
+                and established names dropping the best beats.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Apr 25, 2025</span>
+                  <span class="text-primary fw-bold">$55</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Classical Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="classical">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Classical</span>
+            <img src="https://picsum.photos/seed/classical1/400/240" class="card-img-top" alt="Classical Concert" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Symphony Under Stars</h5>
+              <p class="card-text mb-4">
+                An outdoor classical concert featuring masterpieces from
+                Beethoven, Mozart and more under a beautiful night sky.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>May 10, 2025</span>
+                  <span class="text-primary fw-bold">$85</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Rock Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="rock">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-warning text-dark position-absolute top-0 end-10 m-3">Sold Out</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Rock</span>
+            <img src="https://picsum.photos/seed/rock2/400/240" class="card-img-top" alt="Alternative Rock" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Alternative Rock Night</h5>
+              <p class="card-text mb-4">
+                A night dedicated to alternative rock bands and artists
+                pushing the boundaries of modern rock music.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>May 22, 2025</span>
+                  <span class="text-primary fw-bold">$40</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Jazz Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="jazz">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Jazz</span>
+            <img src="https://picsum.photos/seed/jazz2/400/240" class="card-img-top" alt="Jazz Festival" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Blue Note Jazz Club</h5>
+              <p class="card-text mb-4">
+                A special showcase featuring rising jazz talents performing
+                contemporary and classic jazz compositions.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jun 2, 2025</span>
+                  <span class="text-primary fw-bold">$50</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Electronic Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="electronic">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-danger position-absolute top-0 end-10 m-3">Cancelled</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Electronic</span>
+            <img src="https://picsum.photos/seed/electronic2/400/240" class="card-img-top" alt="Techno Night" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Techno Underground</h5>
+              <p class="card-text mb-4">
+                Dive into the underground techno scene with cutting-edge
+                artists and immersive light installations.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jun 12, 2025</span>
+                  <span class="text-primary fw-bold">$60</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hip Hop Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="hiphop">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Hip Hop</span>
+            <img src="https://picsum.photos/seed/hiphop2/400/240" class="card-img-top" alt="Hip Hop Event" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Urban Beat Showcase</h5>
+              <p class="card-text mb-4">
+                Celebrate hip hop culture with performances from both
+                underground artists and chart-topping rappers.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jun 18, 2025</span>
+                  <span class="text-primary fw-bold">$65</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Classical Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="classical">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-success position-absolute top-0 end-10 m-3">Open</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Classical</span>
+            <img src="https://picsum.photos/seed/classical2/400/240" class="card-img-top" alt="Orchestra" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Chamber Orchestra Night</h5>
+              <p class="card-text mb-4">
+                An intimate evening of chamber music showcasing works from
+                renowned composers performed by master musicians.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jun 25, 2025</span>
+                  <span class="text-primary fw-bold">$70</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Rock Events -->
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 event-card" data-genre="rock">
+        <div class="card h-100 shadow-sm">
+          <a href="event_details.html" class="text-decoration-none text-dark">
+            <span class="badge bg-danger position-absolute top-0 end-10 m-3">Cancelled</span>
+            <span class="position-absolute top-0 end-0 badge bg-primary m-3">Rock</span>
+            <img src="https://picsum.photos/seed/rock3/400/240" class="card-img-top" alt="Rock Band" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold">Classic Rock Revival</h5>
+              <p class="card-text mb-4">
+                Relive the glory days of classic rock with tribute bands
+                playing your favorite hits from the 70s and 80s.
+              </p>
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fas fa-calendar me-2"></i>Jul 5, 2025</span>
+                  <span class="text-primary fw-bold">$55</span>
+                </div>
+                <a href="purchase_tickets.html" class="btn btn-primary w-100">Purchase Now</a>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3">Riffhub</h5>
+          <p class="mb-0">
+            Your ultimate destination for live music events and concerts.
+          </p>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">About Us</a>
+            </li>
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">Contact</a>
+            </li>
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="about:blank" class="text-white-50">FAQ</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5 class="mb-3">Follow Us</h5>
+          <div class="d-flex">
+            <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/mitchell.roemling.1/"
+              class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+            <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/mitchellroemling/"
+              class="text-white me-3"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4" />
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 Riffhub. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+  <!-- Functional Code -->
+  <script>
+    // Filter functionality from dropdown selection
+    document.addEventListener("DOMContentLoaded", function () {
+      // Define elements
+      const genreFilter = document.getElementById("genre-filter");
+      const eventCards = document.querySelectorAll(".event-card");
+
+      // Create Event listener for dropdown selection
+      genreFilter.addEventListener("change", function () {
+        const selectedGenre = this.value;
+
+        // Cycle through each card and update the display style
+        eventCards.forEach((card) => {
+          if (
+            selectedGenre === "all" ||
+            card.getAttribute("data-genre") === selectedGenre
+          ) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

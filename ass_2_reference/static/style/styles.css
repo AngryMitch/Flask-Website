@@ -1,0 +1,47 @@
+/* Color vars */
+:root {
+    --brand-primary: #ff5733;
+    --brand-highlight: #ff7300;
+}
+
+/* Universal Styling */
+body {
+    text-decoration: none;
+}
+
+textarea {
+    resize: none;
+}  
+
+/* Override Bootstrap's colors */
+.bg-primary {
+    background-color: var(--brand-primary) !important;
+}
+
+.text-primary {
+    color: var(--brand-primary) !important;
+}
+
+/* Override Bootstrap classes */
+.btn-primary {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-highlight);
+    border-color: var(--brand-highlight);
+}
+
+.nav-link {
+    color: var(--brand-primary);
+}
+
+.nav-link:hover {
+    color: var(--brand-highlight);
+}
+
+.active {
+    color: var(--brand-highlight);
+    font-weight: 500;
+}
