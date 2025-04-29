@@ -13,3 +13,6 @@ class registerForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired()])
     confirm = PasswordField("Confirm Password", validators=[InputRequired(), EqualTo('password', "Please ensure your passwords are the same")])
     submit = SubmitField("Register")
+
+class commentForm(FlaskForm):
+    body = StringField("Comment", validators=[InputRequired()])

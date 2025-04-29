@@ -4,7 +4,6 @@ from flask_bootstrap import Bootstrap
 from riffhub.extensions import db, csrf
 from riffhub.config import Config
 
-
 def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
