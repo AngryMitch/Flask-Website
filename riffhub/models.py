@@ -44,6 +44,7 @@ class Event(db.Model):
     location = db.Column(db.String(120))
     image = db.Column(db.String(255))
     capacity = db.Column(db.Integer, default=0)  # 0 means unlimited capacity
+    price = db.Column(db.Double, default=0)  # 0 means free entry
     organizer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -118,3 +119,28 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'
+
+# Band Model
+class Band(db.Model):
+    __tablename__ = 'bands'    
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    title = db.Column(db.String(20), nullable=False)
+    genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'), nullable=False)
+
+# Performance Model (Band "performing" at an Event)
+class Performance(db.Model):
+    __tablename__ = 'performances'
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    band_id = db.Column(db.Integer, db.ForeignKey('bands.id'), nullable=False)
+
+# Genre Model
+class Genre(db.Model):
+    __tablename__ = 'genres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

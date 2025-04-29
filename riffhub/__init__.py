@@ -4,7 +4,6 @@ from flask_bootstrap import Bootstrap
 from riffhub.extensions import db, csrf
 from riffhub.config import Config
 
-
 def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
@@ -18,10 +17,6 @@ def create_app(config_class=Config):
     # Ensure upload folder exists
     os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)
     
-    # Initialize extensions
-    db.init_app(app)
-    csrf.init_app(app)
-    
     # Register blueprints and extensions
     from riffhub.blueprints.main import bp as main_bp
     app.register_blueprint(main_bp)
@@ -31,6 +26,9 @@ def create_app(config_class=Config):
     
     from riffhub.blueprints.events import bp as events_bp
     app.register_blueprint(events_bp, url_prefix='/events')
+
+    db.init_app(app)
+    csrf.init_app(app)
     
     # Initialize database
     with app.app_context():

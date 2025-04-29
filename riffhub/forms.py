@@ -7,9 +7,14 @@ class loginForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Login")
 
+
+
 class registerForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     email = EmailField("Email", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     confirm = PasswordField("Confirm Password", validators=[InputRequired(), EqualTo('password', "Please ensure your passwords are the same")])
     submit = SubmitField("Register")
+
+class commentForm(FlaskForm):
+    body = StringField("Comment", validators=[InputRequired()])
