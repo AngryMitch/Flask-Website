@@ -1,0 +1,107 @@
+{# Event card macro #}
+{% macro event_card(event, show_actions=False) %}
+<div class="card h-100 shadow-sm">
+    {% if event.image %}
+    <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
+    {% else %}
+    <div class="bg-light text-center py-5">
+        <i class="bi bi-calendar-event text-primary" style="font-size: 3rem;"></i>
+    </div>
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{ event.title }}</h5>
+        <p class="card-text text-muted">
+            <small>
+                <i class="bi bi-calendar me-1"></i> {{ format_date(event.date) }}
+                {% if event.time %}
+                <br><i class="bi bi-clock me-1"></i> {{ event.time }}
+                {% endif %}
+                {% if event.location %}
+                <br><i class="bi bi-geo-alt me-1"></i> {{ event.location }}
+                {% endif %}
+            </small>
+        </p>
+        <p class="card-text">{{ event.description|truncate(100) }}</p>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center bg-white">
+        <small class="text-muted">
+            <i class="bi bi-people me-1"></i> {{ event.registration_count }} registered
+        </small>
+        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+    </div>
+    {% if show_actions and (session.user_id == event.organizer_id or session.is_admin) %}
+    <div class="card-footer bg-white">
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('events.edit', event_id=event.id) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil me-1"></i> Edit
+            </a>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ event.id }}">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
+        </div>
+        
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal{{ event.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete "{{ event.title }}"? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{{ url_for('events.delete', event_id=event.id) }}" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{# Form field macro #}
+{% macro form_field(name, label, type='text', value='', required=False, placeholder='') %}
+<div class="mb-3">
+    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <input type="{{ type }}" class="form-control" id="{{ name }}" name="{{ name }}" 
+           value="{{ value }}" {% if required %}required{% endif %} placeholder="{{ placeholder }}">
+</div>
+{% endmacro %}
+
+{# Textarea macro #}
+{% macro textarea_field(name, label, value='', rows=5, required=False) %}
+<div class="mb-3">
+    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <textarea class="form-control" id="{{ name }}" name="{{ name }}" 
+              rows="{{ rows }}" {% if required %}required{% endif %}>{{ value }}</textarea>
+</div>
+{% endmacro %}
+
+{# Pagination macro #}
+{% macro pagination(page, pages, endpoint) %}
+{% if pages > 1 %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if page == 1 %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(endpoint, page=page-1) if page > 1 else '#' }}">Previous</a>
+        </li>
+        
+        {% for p in range(max(1, page-2), min(pages+1, page+3)) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for(endpoint, page=p) }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        
+        <li class="page-item {% if page == pages %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(endpoint, page=page+1) if page < pages else '#' }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endmacro %}

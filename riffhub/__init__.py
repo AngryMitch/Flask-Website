@@ -34,9 +34,6 @@ def create_app(config_class=Config):
     # Initialize database
     with app.app_context():
         db.create_all()
-        from riffhub.models import init_db
-        init_db()
-        print("✓ Database initialized (if it didn't already exist)")
     
     # Context processors
     from riffhub.helpers import utility_processor

@@ -8,4 +8,4 @@ from datetime import datetime
 def index():
     """Homepage showing upcoming events"""
     events = Event.query.filter(Event.date >= datetime.now().date()).order_by(Event.date).all()
-    return render_template('main/index.html', events=events)
+    return render_template('index.html', events=events)
