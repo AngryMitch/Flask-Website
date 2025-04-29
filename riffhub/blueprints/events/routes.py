@@ -76,8 +76,8 @@ def edit(event_id):
     """Edit an event"""
     event = Event.query.get_or_404(event_id)
     
-    # Check if user is the organizer or admin
-    if event.organizer_id != session['user_id'] and not session.get('is_admin'):
+    # Check if user is the organizer
+    if event.organizer_id != session['user_id']:
         flash('You do not have permission to edit this event', 'danger')
         return redirect(url_for('events.detail', event_id=event_id))
     
@@ -113,8 +113,8 @@ def delete(event_id):
     """Delete an event"""
     event = Event.query.get_or_404(event_id)
     
-    # Check if user is the organizer or admin
-    if event.organizer_id != session['user_id'] and not session.get('is_admin'):
+    # Check if user is the organizer
+    if event.organizer_id != session['user_id']:
         flash('You do not have permission to delete this event', 'danger')
         return redirect(url_for('events.detail', event_id=event_id))
     

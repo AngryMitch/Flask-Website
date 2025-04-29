@@ -53,13 +53,7 @@
                 >Create Event</a
               >
             </li>
-            {% if session.is_admin %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('admin.dashboard') }}"
-                >Admin</a
-              >
-            </li>
-            {% endif %} {% endif %}
+            {% endif %}
           </ul>
           <ul class="navbar-nav">
             {% if session.user_id %}
@@ -125,13 +119,11 @@
     <!-- Footer -->
     <footer class="footer mt-5 py-3 bg-light">
       <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h5>Event Manager</h5>
-            <p class="text-muted">
-              Create, manage, and discover events with ease.
-            </p>
-          </div>
+        <hr />
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="mb-0">
+            &copy; {{ now.year }} Event Manager. All rights reserved.
+          </p>
           <div class="col-md-4">
             <h5>Quick Links</h5>
             <ul class="list-unstyled">
@@ -151,32 +143,6 @@
               </li>
             </ul>
           </div>
-          <div class="col-md-4">
-            <h5>Connect With Us</h5>
-            <div class="d-flex gap-3 fs-4">
-              <a href="#" class="text-decoration-none"
-                ><i class="bi bi-facebook"></i
-              ></a>
-              <a href="#" class="text-decoration-none"
-                ><i class="bi bi-twitter"></i
-              ></a>
-              <a href="#" class="text-decoration-none"
-                ><i class="bi bi-instagram"></i
-              ></a>
-              <a href="#" class="text-decoration-none"
-                ><i class="bi bi-linkedin"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="mb-0">
-            &copy; {{ now.year }} Event Manager. All rights reserved.
-          </p>
-          <p class="mb-0">
-            Made with <i class="bi bi-heart-fill text-danger"></i> by Event Team
-          </p>
         </div>
       </div>
     </footer>

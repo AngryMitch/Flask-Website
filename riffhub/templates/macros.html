@@ -29,7 +29,7 @@
         </small>
         <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
     </div>
-    {% if show_actions and (session.user_id == event.organizer_id or session.is_admin) %}
+    {% if show_actions and (session.user_id == event.organizer_id) %}
     <div class="card-footer bg-white">
         <div class="d-flex justify-content-between">
             <a href="{{ url_for('events.edit', event_id=event.id) }}" class="btn btn-sm btn-outline-secondary">
