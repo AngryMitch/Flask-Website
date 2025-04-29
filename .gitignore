@@ -1,2 +1,5 @@
 # Python Generated Files
 __pycache__/
+
+# Database
+instance/
