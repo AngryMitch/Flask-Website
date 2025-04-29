@@ -1,8 +1,9 @@
 from flask import render_template, redirect, url_for, request, flash, session, current_app
 from riffhub.blueprints.events import bp
-from riffhub.models import Event, Registration, User, db
+from riffhub.models import Event, Order, Ticket, User, db
 from riffhub.helpers import login_required, save_image
 from datetime import datetime
+from sqlalchemy import func
 
 @bp.route('/')
 def list():
@@ -20,6 +21,13 @@ def create():
         date_str = request.form['date']
         time = request.form['time']
         location = request.form['location']
+        
+        # Handle capacity (new field)
+        capacity = request.form.get('capacity', 0)
+        try:
+            capacity = int(capacity)
+        except ValueError:
+            capacity = 0  # Default to unlimited if invalid input
         
         # Parse date
         try:
@@ -40,6 +48,7 @@ def create():
             date=date,
             time=time,
             location=location,
+            capacity=capacity,
             image=image_filename,
             organizer_id=session['user_id']
         )
@@ -57,18 +66,24 @@ def detail(event_id):
     """View event details"""
     event = Event.query.get_or_404(event_id)
     
-    # Check if user is registered
-    registered = False
+    # Check if user has tickets for this event
+    has_tickets = False
+    ticket_count = 0
     if 'user_id' in session:
-        registration = Registration.query.filter_by(
-            user_id=session['user_id'],
-            event_id=event_id
-        ).first()
-        registered = registration is not None
+        # Get all tickets for this user and event
+        user_tickets = Ticket.query.join(Order).filter(
+            Order.user_id == session['user_id'],
+            Ticket.event_id == event_id,
+            Order.status == 'completed'
+        ).all()
+        
+        has_tickets = len(user_tickets) > 0
+        ticket_count = sum(ticket.quantity for ticket in user_tickets)
     
     return render_template('detail.html', 
                           event=event, 
-                          registered=registered)
+                          has_tickets=has_tickets,
+                          ticket_count=ticket_count)
 
 @bp.route('/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -94,6 +109,14 @@ def edit(event_id):
             
         event.time = request.form['time']
         event.location = request.form['location']
+        
+        # Handle capacity (new field)
+        try:
+            capacity = int(request.form.get('capacity', 0))
+            event.capacity = capacity
+        except ValueError:
+            flash('Invalid capacity value', 'danger')
+            return redirect(url_for('events.edit', event_id=event_id))
         
         # Save image if provided
         if 'image' in request.files and request.files['image'].filename:
@@ -124,59 +147,102 @@ def delete(event_id):
     flash('Event deleted successfully!', 'success')
     return redirect(url_for('main.index'))
 
-@bp.route('/<int:event_id>/register', methods=['POST'])
+@bp.route('/<int:event_id>/order', methods=['GET', 'POST'])
 @login_required
-def register(event_id):
-    """Register for an event"""
+def order_tickets(event_id):
+    """Order tickets for an event"""
     event = Event.query.get_or_404(event_id)
     
-    # Check if already registered
-    registration = Registration.query.filter_by(
-        user_id=session['user_id'],
-        event_id=event_id
-    ).first()
-    
-    if registration:
-        flash('You are already registered for this event', 'info')
-    else:
-        registration = Registration(
-            user_id=session['user_id'],
-            event_id=event_id
+    if request.method == 'POST':
+        # Get requested ticket quantity
+        try:
+            quantity = int(request.form.get('quantity', 1))
+            if quantity <= 0:
+                flash('Please select at least 1 ticket', 'danger')
+                return redirect(url_for('events.order_tickets', event_id=event_id))
+        except ValueError:
+            flash('Invalid ticket quantity', 'danger')
+            return redirect(url_for('events.order_tickets', event_id=event_id))
+        
+        # Check if enough tickets are available
+        if event.capacity > 0 and (event.ticket_count + quantity > event.capacity):
+            available = event.capacity - event.ticket_count
+            if available <= 0:
+                flash('This event is sold out', 'danger')
+            else:
+                flash(f'Only {available} tickets are available', 'danger')
+            return redirect(url_for('events.detail', event_id=event_id))
+        
+        # Create order
+        order = Order(user_id=session['user_id'])
+        db.session.add(order)
+        
+        # Create ticket
+        ticket = Ticket(
+            order_id=order.id,
+            event_id=event_id,
+            quantity=quantity
         )
-        db.session.add(registration)
+        db.session.add(ticket)
         db.session.commit()
-        flash('Successfully registered for the event!', 'success')
+        
+        flash(f'Successfully ordered {quantity} ticket(s) for this event!', 'success')
+        return redirect(url_for('events.detail', event_id=event_id))
     
-    return redirect(url_for('events.detail', event_id=event_id))
+    # GET request: show order form
+    return render_template('order_tickets.html', event=event)
 
-@bp.route('/<int:event_id>/unregister', methods=['POST'])
+@bp.route('/<int:event_id>/cancel', methods=['POST'])
 @login_required
-def unregister(event_id):
-    """Unregister from an event"""
-    registration = Registration.query.filter_by(
-        user_id=session['user_id'],
-        event_id=event_id
-    ).first()
+def cancel_tickets(event_id):
+    """Cancel tickets for an event"""
+    # Find user's tickets for this event
+    tickets = Ticket.query.join(Order).filter(
+        Order.user_id == session['user_id'],
+        Ticket.event_id == event_id,
+        Order.status == 'completed'
+    ).all()
     
-    if registration:
-        db.session.delete(registration)
-        db.session.commit()
-        flash('You have unregistered from this event', 'info')
+    if not tickets:
+        flash('You have no tickets for this event', 'info')
+        return redirect(url_for('events.detail', event_id=event_id))
+    
+    # Cancel the orders (set status to cancelled) 
+    for ticket in tickets:
+        ticket.order.status = 'cancelled'
+    
+    db.session.commit()
+    flash('Your tickets have been cancelled', 'info')
     
     return redirect(url_for('events.detail', event_id=event_id))
 
 @bp.route('/my-events')
 @login_required
 def my_events():
-    """View events created by the current user and events they are registered for"""
+    """View events created by the current user and events they have tickets for"""
     user_id = session['user_id']
     
     # Events created by the user
     created_events = Event.query.filter_by(organizer_id=user_id).order_by(Event.date).all()
     
-    # Events the user is registered for
-    registered_events = Event.query.join(Registration).filter(Registration.user_id == user_id).order_by(Event.date).all()
+    # Events the user has tickets for
+    ticketed_events = Event.query.join(Ticket).join(Order).filter(
+        Order.user_id == user_id,
+        Order.status == 'completed'
+    ).order_by(Event.date).all()
+    
+    # Get ticket counts for each event
+    ticket_counts = {}
+    for event in ticketed_events:
+        # Get total quantity of tickets for this user and event
+        quantity = db.session.query(func.sum(Ticket.quantity)).join(Order).filter(
+            Order.user_id == user_id,
+            Ticket.event_id == event.id,
+            Order.status == 'completed'
+        ).scalar() or 0
+        ticket_counts[event.id] = quantity
     
     return render_template('my_events.html', 
                           created_events=created_events, 
-                          registered_events=registered_events)
+                          ticketed_events=ticketed_events,
+                          ticket_counts=ticket_counts)

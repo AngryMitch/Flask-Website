@@ -1,4 +1,3 @@
-# Our Python Classes / Data Models - Mitch
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from riffhub.extensions import db
@@ -15,7 +14,7 @@ class User(db.Model):
     
     # Relationships
     events = db.relationship('Event', backref='organizer', lazy='dynamic')
-    registrations = db.relationship('Registration', backref='user', lazy='dynamic')
+    orders = db.relationship('Order', backref='user', lazy='dynamic')
     
     @property
     def password(self):
@@ -30,7 +29,7 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-    # Print statemen t
+    # Print statement
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -45,30 +44,62 @@ class Event(db.Model):
     time = db.Column(db.String(20))
     location = db.Column(db.String(120))
     image = db.Column(db.String(255))
+    capacity = db.Column(db.Integer, default=0)  # 0 means unlimited capacity
     organizer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    registrations = db.relationship('Registration', backref='event', lazy='dynamic', cascade='all, delete-orphan')
+    tickets = db.relationship('Ticket', backref='event', lazy='dynamic', cascade='all, delete-orphan')
     
     @property
-    def registration_count(self):
-        return self.registrations.count()
+    def ticket_count(self):
+        """Count of tickets sold for this event"""
+        return db.session.query(db.func.sum(Ticket.quantity)).filter(Ticket.event_id == self.id).scalar() or 0
+    
+    @property
+    def is_full(self):
+        """Check if event has reached capacity"""
+        return self.capacity > 0 and self.ticket_count >= self.capacity
+    
+    @property
+    def available_tickets(self):
+        """Number of tickets still available"""
+        if self.capacity <= 0:  # Unlimited capacity
+            return None
+        return max(0, self.capacity - self.ticket_count)
         
     def __repr__(self):
         return f'<Event {self.title}>'
 
-# Registration Form Validation
-class Registration(db.Model):
-    __tablename__ = 'registrations'
+# Order Model (replaces Registration for multiple tickets)
+class Order(db.Model):
+    __tablename__ = 'orders'
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    registered_at = db.Column(db.DateTime, default=datetime.utcnow)
+    order_date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='completed')  # could be 'pending', 'completed', 'cancelled'
     
-    # Add unique constraint to prevent duplicate registrations
-    __table_args__ = (db.UniqueConstraint('user_id', 'event_id', name='_user_event_uc'),)
+    # Relationships
+    tickets = db.relationship('Ticket', backref='order', lazy='dynamic', cascade='all, delete-orphan')
+    
+    @property
+    def total_tickets(self):
+        """Total number of tickets in this order"""
+        return sum(ticket.quantity for ticket in self.tickets)
     
     def __repr__(self):
-        return f'<Registration {self.user_id} for {self.event_id}>'
+        return f'<Order {self.id} by User {self.user_id}>'
+
+# Ticket Model (replaces Registration to allow multiple tickets)
+class Ticket(db.Model):
+    __tablename__ = 'tickets'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<Ticket {self.id}: {self.quantity} for Event {self.event_id}>'

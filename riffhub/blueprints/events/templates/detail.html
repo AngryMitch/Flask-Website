@@ -74,26 +74,39 @@
                 <div class="mt-4">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-people-fill me-2 text-primary"></i>
-                        <span class="fs-5">{{ event.registration_count }} people registered</span>
+                        <span class="fs-5">{{ event.ticket_count }} tickets sold</span>
+                        
+                        {% if event.capacity > 0 %}
+                        <span class="badge bg-info ms-2">
+                            {{ event.available_tickets }} of {{ event.capacity }} tickets available
+                        </span>
+                        {% endif %}
                     </div>
                     
                     {% if session.user_id %}
-                        {% if registered %}
-                        <form action="{{ url_for('events.unregister', event_id=event.id) }}" method="post">
+                        {% if has_tickets %}
+                        <div class="alert alert-success mb-3">
+                            <i class="bi bi-check-circle me-2"></i>
+                            You have {{ ticket_count }} ticket(s) for this event
+                        </div>
+                        <form action="{{ url_for('events.cancel_tickets', event_id=event.id) }}" method="post">
                             <button type="submit" class="btn btn-outline-danger">
-                                <i class="bi bi-calendar-x me-2"></i> Cancel Registration
+                                <i class="bi bi-calendar-x me-2"></i> Cancel My Tickets
                             </button>
                         </form>
+                        {% elif not event.is_full %}
+                        <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
+                            <i class="bi bi-ticket-perforated me-2"></i> Order Tickets
+                        </a>
                         {% else %}
-                        <form action="{{ url_for('events.register', event_id=event.id) }}" method="post">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-calendar-check me-2"></i> Register for this Event
-                            </button>
-                        </form>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            This event is sold out
+                        </div>
                         {% endif %}
                     {% else %}
                     <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login to Register
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login to Order Tickets
                     </a>
                     {% endif %}
                 </div>
