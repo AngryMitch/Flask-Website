@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from riffhub.extensions import db
+from riffhub.extensions import db, csrf
 from riffhub.config import Config
 
 
@@ -19,6 +19,7 @@ def create_app(config_class=Config):
     
     # Initialize extensions
     db.init_app(app)
+    csrf.init_app(app)
     
     # Register blueprints and extensions
     from riffhub.blueprints.main import bp as main_bp

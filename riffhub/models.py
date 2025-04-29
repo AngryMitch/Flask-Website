@@ -29,7 +29,6 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-    # Print statement
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -74,7 +73,7 @@ class Event(db.Model):
     def __repr__(self):
         return f'<Event {self.title}>'
 
-# Order Model (replaces Registration for multipe tickets)
+# Order Model
 class Order(db.Model):
     __tablename__ = 'orders'
     
@@ -94,7 +93,7 @@ class Order(db.Model):
     def __repr__(self):
         return f'<Order {self.id} by User {self.user_id}>'
 
-# Ticket Model (replaces Registration to allow multiple tickets)
+# Ticket Model
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     
@@ -106,3 +105,13 @@ class Ticket(db.Model):
     
     def __repr__(self):
         return f'<Ticket {self.id}: {self.quantity} for Event {self.event_id}>'
+    
+# Comment Model
+class Comment(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
