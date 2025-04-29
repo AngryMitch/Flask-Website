@@ -7,6 +7,8 @@ class loginForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Login")
 
+
+
 class registerForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     email = EmailField("Email", validators=[InputRequired()])
