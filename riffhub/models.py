@@ -51,16 +51,19 @@ class Event(db.Model):
     # Relationships
     tickets = db.relationship('Ticket', backref='event', lazy='dynamic', cascade='all, delete-orphan')
     
+    # Check tickets sold
     @property
     def ticket_count(self):
         """Count of tickets sold for this event"""
         return db.session.query(db.func.sum(Ticket.quantity)).filter(Ticket.event_id == self.id).scalar() or 0
     
+    # Check if event soldout
     @property
     def is_full(self):
         """Check if event has reached capacity"""
         return self.capacity > 0 and self.ticket_count >= self.capacity
     
+    # Check tickets left to sell
     @property
     def available_tickets(self):
         """Number of tickets still available"""
@@ -71,7 +74,7 @@ class Event(db.Model):
     def __repr__(self):
         return f'<Event {self.title}>'
 
-# Order Model (replaces Registration for multiple tickets)
+# Order Model (replaces Registration for multipe tickets)
 class Order(db.Model):
     __tablename__ = 'orders'
     
