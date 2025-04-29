@@ -8,7 +8,7 @@ from datetime import datetime
 def list():
     """List all events"""
     events = Event.query.order_by(Event.date).all()
-    return render_template('events/index.html', events=events)
+    return render_template('index.html', events=events)
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -50,7 +50,7 @@ def create():
         flash('Event created successfully!', 'success')
         return redirect(url_for('events.detail', event_id=event.id))
     
-    return render_template('events/create.html')
+    return render_template('create.html')
 
 @bp.route('/<int:event_id>')
 def detail(event_id):
@@ -66,7 +66,7 @@ def detail(event_id):
         ).first()
         registered = registration is not None
     
-    return render_template('events/detail.html', 
+    return render_template('detail.html', 
                           event=event, 
                           registered=registered)
 
@@ -105,7 +105,7 @@ def edit(event_id):
         flash('Event updated successfully!', 'success')
         return redirect(url_for('events.detail', event_id=event_id))
     
-    return render_template('events/edit.html', event=event)
+    return render_template('edit.html', event=event)
 
 @bp.route('/<int:event_id>/delete', methods=['POST'])
 @login_required
@@ -177,6 +177,6 @@ def my_events():
     # Events the user is registered for
     registered_events = Event.query.join(Registration).filter(Registration.user_id == user_id).order_by(Event.date).all()
     
-    return render_template('events/my_events.html', 
+    return render_template('my_events.html', 
                           created_events=created_events, 
                           registered_events=registered_events)
