@@ -8,7 +8,7 @@ from datetime import datetime
 def list():
     """List all events"""
     events = Event.query.order_by(Event.date).all()
-    return render_template('index.html', events=events)
+    return render_template('events.html', events=events)
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
