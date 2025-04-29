@@ -6,33 +6,50 @@
     <form method="POST" action="{{ url_for('auth.register') }}">
         {{ form.csrf_token }}
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                id="username" 
-                name="username" 
-                required>
+            <label for="{{ form.username.id }}" class="form-label">Username</label>
+            {{ form.username(class="form-control") }}
+            {% if form.username.errors %}
+                <div class="text-danger small">
+                    {% for error in form.username.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input 
-                type="email" 
-                class="form-control" 
-                id="email" 
-                name="email" 
-                required>
+            <label for="{{ form.email.id }}" class="form-label">Email</label>
+            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+                <div class="text-danger small">
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input 
-                type="password" 
-                class="form-control" 
-                id="password" 
-                name="password" 
-                required>
+            <label for="{{ form.password.id }}" class="form-label">Password</label>
+            {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+                <div class="text-danger small">
+                    {% for error in form.password.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-        <button type="submit" class="btn btn-success w-100">Register</button>
+        <div class="mb-3">
+            <label for="{{ form.confirm.id }}" class="form-label">Confirm Password</label>
+            {{ form.confirm(class="form-control") }}
+            {% if form.confirm.errors %}
+                <div class="text-danger small">
+                    {% for error in form.confirm.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {{ form.submit(class="btn btn-success w-100") }}
     </form>
 
     <div class="text-center mt-3">

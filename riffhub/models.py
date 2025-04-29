@@ -115,3 +115,6 @@ class Comment(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     body = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'

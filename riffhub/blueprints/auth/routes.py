@@ -1,15 +1,17 @@
-# Authorisation Routes - Mithc
-from flask import render_template, redirect, url_for, request, flash, session
+from flask import render_template, redirect, url_for, flash, session
 from riffhub.blueprints.auth import bp
+from riffhub.forms import loginForm, registerForm
 from riffhub.models import User, db
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     """User registration"""
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    form = registerForm()
+    
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
         
         # Check if username or email already exists
         user = User.query.filter((User.username == username) | (User.email == email)).first()
@@ -27,14 +29,16 @@ def register():
         flash('Registration successful! Please log in.', 'success')
         return redirect(url_for('auth.login'))
     
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     """User login"""
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = loginForm()
+    
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
         
         user = User.query.filter_by(username=username).first()
         
@@ -46,7 +50,7 @@ def login():
         
         flash('Invalid username or password', 'danger')
     
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 @bp.route('/logout')
 def logout():

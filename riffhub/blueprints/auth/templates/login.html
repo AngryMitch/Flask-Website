@@ -1,29 +1,32 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container mt-5" style="max-width: 400px;">
     <h2 class="mb-4 text-center">Login</h2>
     <form method="POST" action="{{ url_for('auth.login') }}">
         {{ form.csrf_token }}
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input 
-                type="text" 
-                class="form-control" 
-                id="username" 
-                name="username" 
-                required>
+            <label for="{{ form.username.id }}" class="form-label">Username</label>
+            {{ form.username(class="form-control") }}
+            {% if form.username.errors %}
+                <div class="text-danger small">
+                    {% for error in form.username.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input 
-                type="password" 
-                class="form-control" 
-                id="password" 
-                name="password" 
-                required>
+            <label for="{{ form.password.id }}" class="form-label">Password</label>
+            {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+                <div class="text-danger small">
+                    {% for error in form.password.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        {{ form.submit(class="btn btn-primary w-100") }}
     </form>
 
     <div class="text-center mt-3">
