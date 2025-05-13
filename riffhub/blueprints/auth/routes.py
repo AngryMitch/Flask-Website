@@ -8,6 +8,10 @@ def register():
     """User registration"""
     form = registerForm()
     
+
+
+
+    
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
