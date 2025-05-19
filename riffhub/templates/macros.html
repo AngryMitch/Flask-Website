@@ -12,7 +12,8 @@
         <h5 class="card-title">{{ event.title }}</h5>
         <p class="card-text text-muted">
             <small>
-                <i class="bi bi-calendar me-1"></i> {{ format_date(event.date) }}
+                <i class="bi bi-calendar me-1"></i> {{ event.date.strftime('%B %d, %Y') }}
+
                 {% if event.time %}
                 <br><i class="bi bi-clock me-1"></i> {{ event.time }}
                 {% endif %}
