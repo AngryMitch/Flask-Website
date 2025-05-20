@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy import Time
 from werkzeug.security import generate_password_hash, check_password_hash
 from riffhub.extensions import db
 
@@ -40,7 +41,7 @@ class Event(db.Model):
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text)
     date = db.Column(db.Date, nullable=False)
-    time = db.Column(db.String(20))
+    time = db.Column(Time, nullable=False)
     location = db.Column(db.String(120))
     image = db.Column(db.String(255))
     capacity = db.Column(db.Integer, default=0)  # 0 means unlimited capacity

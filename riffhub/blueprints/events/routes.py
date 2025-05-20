@@ -4,7 +4,7 @@ from riffhub.models import Event, Order, Ticket, User, db
 from riffhub.helpers import login_required, save_image
 from datetime import datetime
 from sqlalchemy import func
-
+from riffhub.forms import EventForm  
 @bp.route('/')
 def list():
     """List all events"""
@@ -15,7 +15,9 @@ def list():
 @login_required
 def create():
     """Create a new event"""
+    form = EventForm()
     if request.method == 'POST':
+    
         title = request.form['title']
         description = request.form['description']
         date_str = request.form['date']
@@ -41,15 +43,15 @@ def create():
         if 'image' in request.files:
             image_filename = save_image(request.files['image'])
         
+        
         # Create event
         event = Event(
-            title=title,
-            description=description,
-            date=date,
-            time=time,
-            location=location,
-            capacity=capacity,
-            image=image_filename,
+            title=form.title.data,
+            description=form.description.data,
+            date=form.date.data,
+            time=form.time.data,
+            location=form.location.data,
+            capacity=form.capacity.data or 0,
             organizer_id=session['user_id']
         )
         
@@ -59,7 +61,7 @@ def create():
         flash('Event created successfully!', 'success')
         return redirect(url_for('events.detail', event_id=event.id))
     
-    return render_template('create.html')
+    return render_template('create.html', form=form)
 
 @bp.route('/<int:event_id>')
 def detail(event_id):
@@ -96,6 +98,8 @@ def edit(event_id):
         flash('You do not have permission to edit this event', 'danger')
         return redirect(url_for('events.detail', event_id=event_id))
     
+    form = EventForm(obj=event)
+
     if request.method == 'POST':
         event.title = request.form['title']
         event.description = request.form['description']
@@ -128,7 +132,8 @@ def edit(event_id):
         flash('Event updated successfully!', 'success')
         return redirect(url_for('events.detail', event_id=event_id))
     
-    return render_template('edit.html', event=event)
+    
+    return render_template('edit.html', form=form, event=event)
 
 @bp.route('/<int:event_id>/delete', methods=['POST'])
 @login_required

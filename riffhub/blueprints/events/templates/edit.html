@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Event</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}  {# <-- This includes CSRF token #}
+
+        <div class="mb-3">
+            {{ form.title.label }} {{ form.title(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label }} {{ form.description(class="form-control", rows="5") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.date.label }} {{ form.date(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.time.label }} {{ form.time(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.location.label }} {{ form.location(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.capacity.label }} {{ form.capacity(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.image.label }} {{ form.image(class="form-control") }}
+            {% if event.image %}
+                <div class="mt-2">
+                    <img src="{{ url_for('static', filename='uploads/' ~ event.image) }}" alt="Event Image" style="max-width: 200px;">
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Event</button>
+    </form>
+</div>
+{% endblock %}
