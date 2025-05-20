@@ -3,4 +3,4 @@ __pycache__/
 
 # Database
 instance/
-app/static/uploads
+app/static/uploads/
