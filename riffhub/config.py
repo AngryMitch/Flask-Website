@@ -2,13 +2,11 @@
 import os
 from datetime import timedelta
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'mitches_secret_key')
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        'sqlite:///' + os.path.join(basedir, 'instance', 'data.db')
+        'sqlite:////home/angry0mitch/Flask-Website/instance/data.db'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.path.join('static', 'uploads')
