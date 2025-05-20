@@ -33,6 +33,17 @@
         </a>
     </div>
     {% endif %}
+    <form method="get">
+        <select name="genre">
+            <option value="">All Genres</option>
+            {% for g in genres %}
+            <option value="{{ g.id }}" {% if selected_genre == g.id %}selected{% endif %}>
+                {{ g.title }}
+            </option>
+            {% endfor %}
+        </select>
+        <button>Filter</button>
+    </form>
 </div>
 
 {% if events %}

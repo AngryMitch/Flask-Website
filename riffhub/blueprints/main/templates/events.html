@@ -4,37 +4,50 @@
 {% block title %}Home | Event Manager{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h2>Upcoming Events</h2>
+<div class="row mb-4 align-items-center">
+  <div class="col">
+    <h2>Upcoming Events</h2>
+  </div>
+  {% if session.user_id %}
+    <div class="col-auto">
+      <a href="{{ url_for('events.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Create Event
+      </a>
     </div>
-    {% if session.user_id %}
-    <div class="col-auto d-flex align-items-center">
-        <a href="{{ url_for('events.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i> Create Event
-        </a>
-    </div>
-    {% endif %}
+  {% endif %}
+  <div class="col-auto">
+    <form method="get" class="d-flex">
+      <select name="genre" class="form-select me-2">
+        <option value="">All Genres</option>
+        {% for g in genres %}
+          <option value="{{ g.id }}"
+            {% if selected_genre == g.id %}selected{% endif %}>
+            {{ g.title }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-outline-secondary">Filter</button>
+    </form>
+  </div>
 </div>
 
 {% if events %}
-<div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for event in events %}
-    <div class="col">
+      <div class="col">
         {{ macros.event_card(event) }}
-    </div>
+      </div>
     {% endfor %}
-</div>
-
-{% if events|length >= 6 %}
-<div class="text-center mt-4">
-    <a href="{{ url_for('events.list') }}" class="btn btn-outline-primary">View All Events</a>
-</div>
-{% endif %}
-
+  </div>
+  {% if events|length >= 6 %}
+    <div class="text-center mt-4">
+      <a href="{{ url_for('events.list') }}"
+         class="btn btn-outline-primary">View All Events</a>
+    </div>
+  {% endif %}
 {% else %}
-<div class="alert alert-info">
+  <div class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i> There are no upcoming events at this time.
-</div>
+  </div>
 {% endif %}
 {% endblock %}

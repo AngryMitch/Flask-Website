@@ -40,6 +40,7 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text)
+    genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'))    
     date = db.Column(db.Date, nullable=False)
     time = db.Column(Time, nullable=False)
     location = db.Column(db.String(120))
@@ -128,7 +129,6 @@ class Band(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(20), nullable=False)
-    genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'), nullable=False)
 
 # Performance Model (Band "performing" at an Event)
 class Performance(db.Model):
