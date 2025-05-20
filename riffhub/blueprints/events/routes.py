@@ -21,38 +21,32 @@ def create():
         date_str = request.form['date']
         time = request.form['time']
         location = request.form['location']
-        
-        # Handle capacity (new field)
         capacity = request.form.get('capacity', 0)
         try:
             capacity = int(capacity)
         except ValueError:
-            capacity = 0  # Default to unlimited if invalid input
+            capacity = 0
         
-        # Parse date
         try:
-            date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format', 'danger')
             return redirect(url_for('events.create'))
         
-        # Save image if provided
         image_filename = None
         if 'image' in request.files:
             image_filename = save_image(request.files['image'])
         
-        # Create event
         event = Event(
             title=title,
             description=description,
-            date=date,
+            date=date_obj,
             time=time,
             location=location,
             capacity=capacity,
             image=image_filename,
             organizer_id=session['user_id']
         )
-        
         db.session.add(event)
         db.session.commit()
         
@@ -65,18 +59,14 @@ def create():
 def detail(event_id):
     """View event details"""
     event = Event.query.get_or_404(event_id)
-    
-    # Check if user has tickets for this event
     has_tickets = False
     ticket_count = 0
     if 'user_id' in session:
-        # Get all tickets for this user and event
         user_tickets = Ticket.query.join(Order).filter(
             Order.user_id == session['user_id'],
             Ticket.event_id == event_id,
             Order.status == 'completed'
         ).all()
-        
         has_tickets = len(user_tickets) > 0
         ticket_count = sum(ticket.quantity for ticket in user_tickets)
     
@@ -90,8 +80,6 @@ def detail(event_id):
 def edit(event_id):
     """Edit an event"""
     event = Event.query.get_or_404(event_id)
-    
-    # Check if user is the organizer
     if event.organizer_id != session['user_id']:
         flash('You do not have permission to edit this event', 'danger')
         return redirect(url_for('events.detail', event_id=event_id))
@@ -99,31 +87,22 @@ def edit(event_id):
     if request.method == 'POST':
         event.title = request.form['title']
         event.description = request.form['description']
-        
-        # Parse date
         try:
             event.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format', 'danger')
             return redirect(url_for('events.edit', event_id=event_id))
-            
         event.time = request.form['time']
         event.location = request.form['location']
-        
-        # Handle capacity (new field)
         try:
-            capacity = int(request.form.get('capacity', 0))
-            event.capacity = capacity
+            event.capacity = int(request.form.get('capacity', 0))
         except ValueError:
             flash('Invalid capacity value', 'danger')
             return redirect(url_for('events.edit', event_id=event_id))
-        
-        # Save image if provided
         if 'image' in request.files and request.files['image'].filename:
             image_filename = save_image(request.files['image'])
             if image_filename:
                 event.image = image_filename
-        
         db.session.commit()
         flash('Event updated successfully!', 'success')
         return redirect(url_for('events.detail', event_id=event_id))
@@ -135,15 +114,12 @@ def edit(event_id):
 def delete(event_id):
     """Delete an event"""
     event = Event.query.get_or_404(event_id)
-    
-    # Check if user is the organizer
     if event.organizer_id != session['user_id']:
         flash('You do not have permission to delete this event', 'danger')
         return redirect(url_for('events.detail', event_id=event_id))
     
     db.session.delete(event)
     db.session.commit()
-    
     flash('Event deleted successfully!', 'success')
     return redirect(url_for('main.index'))
 
@@ -152,9 +128,11 @@ def delete(event_id):
 def order_tickets(event_id):
     """Order tickets for an event"""
     event = Event.query.get_or_404(event_id)
+    if event.date < date.today():
+        flash('This event has already passed', 'danger')
+        return redirect(url_for('events.detail', event_id=event_id))
     
     if request.method == 'POST':
-        # Get requested ticket quantity
         try:
             quantity = int(request.form.get('quantity', 1))
             if quantity <= 0:
@@ -164,39 +142,27 @@ def order_tickets(event_id):
             flash('Invalid ticket quantity', 'danger')
             return redirect(url_for('events.order_tickets', event_id=event_id))
         
-        # Check if enough tickets are available
         if event.capacity > 0 and (event.ticket_count + quantity > event.capacity):
             available = event.capacity - event.ticket_count
-            if available <= 0:
-                flash('This event is sold out', 'danger')
-            else:
-                flash(f'Only {available} tickets are available', 'danger')
+            flash('This event is sold out' if available <= 0 else f'Only {available} tickets are available', 'danger')
             return redirect(url_for('events.detail', event_id=event_id))
         
-        # Create order
         order = Order(user_id=session['user_id'])
         db.session.add(order)
-        
-        # Create ticket
-        ticket = Ticket(
-            order_id=order.id,
-            event_id=event_id,
-            quantity=quantity
-        )
+        db.session.flush()
+        ticket = Ticket(order_id=order.id, event_id=event_id, quantity=quantity)
         db.session.add(ticket)
         db.session.commit()
         
-        flash(f'Successfully ordered {quantity} ticket(s) for this event!', 'success')
-        return redirect(url_for('events.detail', event_id=event_id))
+        flash(f'Successfully ordered {quantity} ticket(s) for this event! Your order ID is #{order.id}', 'success')
+        return redirect(url_for('events.my_tickets'))
     
-    # GET request: show order form
     return render_template('order_tickets.html', event=event)
 
 @bp.route('/<int:event_id>/cancel', methods=['POST'])
 @login_required
 def cancel_tickets(event_id):
     """Cancel tickets for an event"""
-    # Find user's tickets for this event
     tickets = Ticket.query.join(Order).filter(
         Order.user_id == session['user_id'],
         Ticket.event_id == event_id,
@@ -206,43 +172,39 @@ def cancel_tickets(event_id):
     if not tickets:
         flash('You have no tickets for this event', 'info')
         return redirect(url_for('events.detail', event_id=event_id))
-    
-    # Cancel the orders (set status to cancelled) 
+
     for ticket in tickets:
         ticket.order.status = 'cancelled'
-    
+
     db.session.commit()
     flash('Your tickets have been cancelled', 'info')
-    
-    return redirect(url_for('events.detail', event_id=event_id))
+    return redirect(url_for('events.my_tickets'))
 
 @bp.route('/my-events')
 @login_required
 def my_events():
-    """View events created by the current user and events they have tickets for"""
+    """View events created by the current user"""
     user_id = session['user_id']
-    
-    # Events created by the user
+    current_date = date.today()
     created_events = Event.query.filter_by(organizer_id=user_id).order_by(Event.date).all()
-    
-    # Events the user has tickets for
-    ticketed_events = Event.query.join(Ticket).join(Order).filter(
-        Order.user_id == user_id,
-        Order.status == 'completed'
-    ).order_by(Event.date).all()
-    
-    # Get ticket counts for each event
-    ticket_counts = {}
-    for event in ticketed_events:
-        # Get total quantity of tickets for this user and event
-        quantity = db.session.query(func.sum(Ticket.quantity)).join(Order).filter(
-            Order.user_id == user_id,
-            Ticket.event_id == event.id,
-            Order.status == 'completed'
-        ).scalar() or 0
-        ticket_counts[event.id] = quantity
-    
-    return render_template('my_events.html', 
-                          created_events=created_events, 
-                          ticketed_events=ticketed_events,
-                          ticket_counts=ticket_counts)
+    return render_template('my_events.html', created_events=created_events, current_date=current_date)
+
+@bp.route('/my-tickets')
+@login_required
+def my_tickets():
+    """View tickets purchased by the current user"""
+    user_id = session['user_id']
+    current_date = date.today()
+    user_orders = Order.query.filter_by(user_id=user_id, status='completed').all()
+    order_details = []
+
+    for order in user_orders:
+        order_info = {'order': order, 'tickets': []}
+        for ticket in order.tickets:
+            event = Event.query.get(ticket.event_id)
+            if event:
+                order_info['tickets'].append({'ticket': ticket, 'event': event})
+        if order_info['tickets']:
+            order_details.append(order_info)
+
+    return render_template('my_tickets.html', order_details=order_details, current_date=current_date)
