@@ -3,7 +3,7 @@ import os
 from datetime import timedelta
 
 # TRUE = local db, FALSE = pythonanywhereDB. MUST ALWAYS BE FALSE in main branch
-devEnv = True
+devEnv = False
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
