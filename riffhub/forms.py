@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+
 from wtforms.fields import EmailField, StringField, PasswordField, SubmitField,StringField, TextAreaField, DateField, IntegerField, FileField, TimeField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, EqualTo,DataRequired
@@ -21,6 +22,8 @@ class registerForm(FlaskForm):
 
 class commentForm(FlaskForm):
     body = StringField("Comment", validators=[InputRequired()])
+    submit = SubmitField("Post Comment")
+
 
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
@@ -39,6 +42,8 @@ class EventForm(FlaskForm):
     capacity = IntegerField('Capacity')
     image = FileField('Image')
     
+    submit = SubmitField('Save Event')
+
 class GenreForm(FlaskForm):
     name = StringField('Genre Name', validators=[DataRequired()])
     submit = SubmitField('Add Genre')

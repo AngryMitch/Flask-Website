@@ -2,7 +2,7 @@
 import os
 from datetime import datetime
 from functools import wraps
-from flask import current_app, flash, redirect, url_for, session
+from flask import current_app, flash, redirect, url_for, session, request
 from werkzeug.utils import secure_filename
 
 # Allowed file types from ./config.py

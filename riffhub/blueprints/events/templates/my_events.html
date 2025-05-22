@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}My Events{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">My Events</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{{ url_for('events.my_tickets') }}" class="btn btn-outline-primary">
+            <i class="bi bi-ticket-perforated"></i> View My Tickets
+        </a>
+    </div>
+    <div>
+        <a href="{{ url_for('events.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Create New Event
+        </a>
+    </div>
+</div>
+
+{% if created_events %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for event in created_events %}
+            <div class="col">
+                <div class="card h-100 event-card">
+                    {% if event.image %}
+                        <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="card-img-top" alt="{{ event.title }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/event-placeholder.jpg') }}" class="card-img-top" alt="Event placeholder">
+                    {% endif %}
+                    
+                    <!-- Event Status Badge -->
+                    <div class="event-status">
+                        {% if event.is_full %}
+                            <span class="badge bg-danger">Sold Out</span>
+                        {% elif event.date < current_date %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% else %}
+                            <span class="badge bg-success">Open</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-event"></i> {{ event.date.strftime('%d %b %Y') }}
+                                {% if event.time %}
+                                    at {{ event.time }}
+                                {% endif %}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-geo-alt"></i> {{ event.location }}
+                            </small>
+                        </p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            {% if event.price > 0 %}
+                                <span class="badge bg-info text-dark">${{ "%.2f"|format(event.price) }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">Free</span>
+                            {% endif %}
+                            
+                            <span class="badge bg-primary">
+                                {% if event.capacity > 0 %}
+                                    {{ event.ticket_count }}/{{ event.capacity }} Tickets Sold
+                                {% else %}
+                                    {{ event.ticket_count }} Tickets Sold
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                            <a href="{{ url_for('events.edit', event_id=event.id) }}" class="btn btn-secondary btn-sm">Edit Event</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="icon">
+            <i class="bi bi-calendar-x"></i>
+        </div>
+        <h3>No Events Created</h3>
+        <p class="text-muted">You haven't created any events yet.</p>
+        <a href="{{ url_for('events.create') }}" class="btn btn-primary mt-3">Create Your First Event</a>
+    </div>
+{% endif %}
+</div>
+{% endblock %}

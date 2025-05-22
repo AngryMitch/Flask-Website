@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}My Tickets{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">My Tickets</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a href="{{ url_for('events.my_events') }}" class="btn btn-outline-primary">
+            <i class="bi bi-calendar-event"></i> View My Events
+        </a>
+    </div>
+    <div>
+        <a href="{{ url_for('events.list') }}" class="btn btn-success">
+            <i class="bi bi-search"></i> Browse All Events
+        </a>
+    </div>
+</div>
+
+{% if order_details %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tickets Purchased</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover tickets-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                            <th>Order Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_info in order_details %}
+                            {% for ticket_info in order_info.tickets %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info text-dark order-id">#{{ order_info.order.id }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('events.detail', event_id=ticket_info.event.id) }}" class="fw-bold text-decoration-none">
+                                            {{ ticket_info.event.title }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="d-flex align-items-center">
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            {{ ticket_info.event.date.strftime('%d %b %Y') }}
+                                        </span>
+                                        {% if ticket_info.event.time %}
+                                            <small class="text-muted">{{ ticket_info.event.time }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ ticket_info.ticket.quantity }}</span>
+                                    </td>
+                                    <td>
+                                        {{ order_info.order.order_date.strftime('%d %b %Y') }}
+                                    </td>
+                                    <td>
+                                        {% if ticket_info.event.date < current_date %}
+                                            <span class="badge bg-secondary">Past Event</span>
+                                        {% elif ticket_info.event.is_full %}
+                                            <span class="badge bg-danger">Sold Out</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if ticket_info.event.date >= current_date %}
+                                            <form action="{{ url_for('events.cancel_tickets', event_id=ticket_info.event.id) }}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this ticket?')">
+                                                    <i class="bi bi-x-circle"></i> Cancel
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button class="btn btn-outline-secondary btn-sm" disabled>
+                                                <i class="bi bi-clock-history"></i> Expired
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> 
+            <strong>Need help?</strong> If you need to modify your order, please contact the event organizer directly.
+        </div>
+    </div>
+{% else %}
+    <div class="empty-state">
+        <div class="icon">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <h3>No Tickets Purchased</h3>
+        <p class="text-muted">You haven't purchased any tickets yet.</p>
+        <a href="{{ url_for('events.list') }}" class="btn btn-primary mt-3">Browse Events</a>
+    </div>
+{% endif %}
+</div>
+{% endblock %}
