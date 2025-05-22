@@ -1,9 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import EmailField, StringField, PasswordField, SubmitField, TextAreaField, DateField, IntegerField, FileField, TimeField
+
+from wtforms.fields import EmailField, StringField, PasswordField, SubmitField,StringField, TextAreaField, DateField, IntegerField, FileField, TimeField
 from wtforms_sqlalchemy.fields import QuerySelectField
-from wtforms.validators import InputRequired, EqualTo, DataRequired
+from wtforms.validators import InputRequired, EqualTo,DataRequired
 from flask_wtf.file import FileField
+
 from riffhub.models import Genre
+
 
 class loginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
@@ -21,6 +24,7 @@ class commentForm(FlaskForm):
     body = StringField("Comment", validators=[InputRequired()])
     submit = SubmitField("Post Comment")
 
+
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description')
@@ -37,6 +41,7 @@ class EventForm(FlaskForm):
     location = StringField('Location', validators=[DataRequired()])
     capacity = IntegerField('Capacity')
     image = FileField('Image')
+    
     submit = SubmitField('Save Event')
 
 class GenreForm(FlaskForm):

@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <h2>Create Event</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.title.label }} {{ form.title(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label }} {{ form.description(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.genre.label }} {{ form.genre(class="form-select") }}
+      <small class="form-text text-muted">
+        Can't find the genre you're looking for?
+        <a href="{{ url_for('events.genres') }}">Manage genres</a>
+      </small>
+    </div>
+    <div class="mb-3">
+      {{ form.date.label }} {{ form.date(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.time.label }} {{ form.time(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.location.label }} {{ form.location(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.capacity.label }} {{ form.capacity(class="form-control") }}
+    </div>
+    <div class="mb-3">
+      {{ form.image.label }} {{ form.image(class="form-control") }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Event</button>
+  </form>
+</div>
+{% endblock %}

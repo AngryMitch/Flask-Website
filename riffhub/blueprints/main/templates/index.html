@@ -33,6 +33,20 @@
         </a>
     </div>
     {% endif %}
+    <div class="col-auto">
+    <form method="get" class="d-flex">
+      <select name="genre" class="form-select me-2">
+        <option value="">All Genres</option>
+        {% for g in genres %}
+          <option value="{{ g.id }}"
+            {% if selected_genre == g.id %}selected{% endif %}>
+            {{ g.title }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-outline-secondary">Filter</button>
+    </form>
+  </div>
 </div>
 
 {% if events %}
