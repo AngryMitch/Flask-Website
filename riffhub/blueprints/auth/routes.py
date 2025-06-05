@@ -1,12 +1,12 @@
 from flask import render_template, redirect, url_for, flash, session
 from riffhub.blueprints.auth import bp
-from riffhub.forms import loginForm, registerForm
+from riffhub.forms import LoginForm, RegisterForm
 from riffhub.models import User, db
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     """User registration"""
-    form = registerForm()
+    form = RegisterForm()
     
 
 
@@ -38,7 +38,7 @@ def register():
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     """User login"""
-    form = loginForm()
+    form = LoginForm()
     
     if form.validate_on_submit():
         username = form.username.data

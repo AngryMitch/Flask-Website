@@ -5,7 +5,7 @@ from riffhub.models import Event, Genre, Order, Ticket, User, Comment, db
 from riffhub.helpers import login_required, save_image, utility_processor
 from datetime import datetime, date
 from sqlalchemy import func
-from riffhub.forms import EventForm, GenreForm, commentForm
+from riffhub.forms import EventForm, GenreForm, CommentForm, OrderTicketsForm
 
 @bp.route('/')
 def list():
@@ -78,7 +78,7 @@ def detail(event_id):
     # Create comment form if user is logged in
     comment_form = None
     if 'user_id' in session:
-        comment_form = commentForm()
+        comment_form = CommentForm()
     
     # Format the date correctly for the template
     current_date = date.today()
@@ -136,61 +136,34 @@ def delete(event_id):
     flash('Event deleted successfully!', 'success')
     return redirect(url_for('events.my_events'))
 
-@bp.route('/<int:event_id>/order', methods=['GET', 'POST'])
+@bp.route('/event/<int:event_id>/order', methods=['GET', 'POST'])
 @login_required
 def order_tickets(event_id):
-    """Order tickets for an event"""
     event = Event.query.get_or_404(event_id)
     
-    # Check if event date is in the past
-    if event.date < date.today():
-        flash('This event has already occurred', 'warning')
-        return redirect(url_for('events.detail', event_id=event_id))
-    
-    # Check if event is full
-    if event.is_full:
-        flash('This event is sold out', 'warning')
-        return redirect(url_for('events.detail', event_id=event_id))
-    
-    if request.method == 'POST':
-        # Get requested ticket quantity
-        try:
-            quantity = int(request.form.get('quantity', 1))
-            if quantity <= 0:
-                flash('Please select at least 1 ticket', 'danger')
-                return redirect(url_for('events.order_tickets', event_id=event_id))
-        except ValueError:
-            flash('Invalid ticket quantity', 'danger')
-            return redirect(url_for('events.order_tickets', event_id=event_id))
-        
-        # Check if enough tickets are available
-        if event.capacity > 0 and (event.ticket_count + quantity > event.capacity):
-            available = event.capacity - event.ticket_count
-            if available <= 0:
-                flash('This event is sold out', 'danger')
-            else:
-                flash(f'Only {available} tickets are available', 'danger')
-            return redirect(url_for('events.detail', event_id=event_id))
-        
-        # Create order
+    max_tickets = event.available_tickets if event.capacity > 0 else 100
+    if max_tickets < 1:
+        flash('No tickets available for this event.', 'danger')
+        return redirect(url_for('events.detail', event_id=event.id))
+
+    form = OrderTicketsForm(max_tickets=max_tickets)
+
+    if form.validate_on_submit():
+        quantity = form.quantity.data
+
+        # Create Order and Tickets
         order = Order(user_id=session['user_id'])
         db.session.add(order)
-        db.session.flush()  # Flush to get the order ID
-        
-        # Create ticket
-        ticket = Ticket(
-            order_id=order.id,
-            event_id=event_id,
-            quantity=quantity
-        )
+        db.session.flush()  # Get order.id before adding ticket
+
+        ticket = Ticket(order_id=order.id, event_id=event.id, quantity=quantity)
         db.session.add(ticket)
         db.session.commit()
-        
-        flash(f'Successfully ordered {quantity} ticket(s) for this event! Your order ID is #{order.id}', 'success')
+
+        flash(f'Successfully ordered {quantity} ticket(s)!', 'success')
         return redirect(url_for('events.my_tickets'))
-    
-    # GET request: show order form
-    return render_template('order_tickets.html', event=event)
+
+    return render_template('order_tickets.html', form=form, event=event)
 
 @bp.route('/<int:event_id>/cancel', methods=['POST'])
 @login_required
@@ -277,7 +250,7 @@ def add_comment(event_id):
     """Add a comment to an event"""
     event = Event.query.get_or_404(event_id)
     
-    form = commentForm()
+    form = CommentForm()
     if form.validate_on_submit():
         # Create new comment
         comment = Comment(

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Order Tickets - {{ event.title }}</h2>
+  <p><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') }}</p>
+  <p><strong>Time:</strong> {{ event.time.strftime('%I:%M %p') }}</p>
+  <p><strong>Price per ticket:</strong> ${{ '%.2f' | format(event.price) }}</p>
+  <p><strong>Available:</strong> 
+    {% if event.capacity > 0 %}
+      {{ event.available_tickets }} tickets remaining
+    {% else %}
+      Unlimited
+    {% endif %}
+  </p>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {% set max_tickets = event.available_tickets if event.capacity > 0 else 100 %}
+      {% if max_tickets < 1 %}
+        {% set max_tickets = 100 %}
+      {% endif %}
+
+      {{ form.quantity.label }}
+      {{ form.quantity(
+          class="form-control",
+          min="1",
+          max=max_tickets|string,
+          id="quantity"
+      ) }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label"><strong>Total:</strong> $<span id="total">{{ '%.2f' | format(event.price) }}</span></label>
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-secondary ms-2">Back to Event</a>
+  </form>
+</div>
+
+<script>
+  const price = {{ event.price|tojson }};
+  const quantityInput = document.getElementById('quantity');
+  const totalSpan = document.getElementById('total');
+
+  quantityInput.addEventListener('input', () => {
+    const qty = parseInt(quantityInput.value) || 1;
+    totalSpan.textContent = (qty * price).toFixed(2);
+  });
+</script>
+{% endblock %}
