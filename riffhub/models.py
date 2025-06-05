@@ -14,8 +14,11 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    events = db.relationship('Event', backref='organizer', lazy='dynamic')
-    orders = db.relationship('Order', backref='user', lazy='dynamic')
+    events = db.relationship('Event', backref='organizer', lazy='dynamic', cascade='all, delete-orphan')
+    orders = db.relationship('Order', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    bands = db.relationship('Band', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    genres = db.relationship('Genre', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     
     @property
     def password(self):
@@ -32,6 +35,20 @@ class User(db.Model):
     
     def __repr__(self):
         return f'<User {self.username}>'
+
+# Genre Model (moved up because Event references it)
+class Genre(db.Model):
+    __tablename__ = 'genres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(20), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    # Relationships
+    events = db.relationship('Event', backref='genre', lazy='dynamic')
+    
+    def __repr__(self):
+        return f'<Genre {self.title}>'
 
 # Event Model
 class Event(db.Model):
@@ -52,6 +69,8 @@ class Event(db.Model):
     
     # Relationships
     tickets = db.relationship('Ticket', backref='event', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', backref='event', lazy='dynamic', cascade='all, delete-orphan')
+    performances = db.relationship('Performance', backref='event', lazy='dynamic', cascade='all, delete-orphan')
     
     # Check tickets sold
     @property
@@ -111,6 +130,8 @@ class Ticket(db.Model):
     quantity = db.Column(db.Integer, nullable=False, default=1)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Note: backref relationships are defined in Order and Event models
+    
     def __repr__(self):
         return f'<Ticket {self.id}: {self.quantity} for Event {self.event_id}>'
     
@@ -124,6 +145,8 @@ class Comment(db.Model):
     body = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Note: backref relationships are defined in User and Event models
+
     def __repr__(self):
         return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'
 
@@ -134,6 +157,12 @@ class Band(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(20), nullable=False)
+    
+    # Relationships
+    performances = db.relationship('Performance', backref='band', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f'<Band {self.title}>'
 
 # Performance Model (Band "performing" at an Event)
 class Performance(db.Model):
@@ -142,11 +171,8 @@ class Performance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     band_id = db.Column(db.Integer, db.ForeignKey('bands.id'), nullable=False)
-
-# Genre Model
-class Genre(db.Model):
-    __tablename__ = 'genres'
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(20), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    # Note: backref relationships are defined in Event and Band models
+    
+    def __repr__(self):
+        return f'<Performance: Band {self.band_id} at Event {self.event_id}>'

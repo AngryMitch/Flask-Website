@@ -278,6 +278,29 @@ def add_comment(event_id):
     
     return redirect(url_for('events.detail', event_id=event_id))
 
+@bp.route('/<int:event_id>/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+def delete_comment(event_id, comment_id):
+    """Delete a comment"""
+    comment = Comment.query.get_or_404(comment_id)
+    event = Event.query.get_or_404(event_id)
+    
+    # Check if user owns the comment or is admin
+    if comment.user_id != session['user_id'] and not session.get('is_admin', False):
+        flash('You do not have permission to delete this comment', 'danger')
+        return redirect(url_for('events.detail', event_id=event_id))
+    
+    # Ensure comment belongs to this event
+    if comment.event_id != event_id:
+        flash('Comment not found for this event', 'danger')
+        return redirect(url_for('events.detail', event_id=event_id))
+    
+    db.session.delete(comment)
+    db.session.commit()
+    
+    flash('Comment deleted successfully', 'success')
+    return redirect(url_for('events.detail', event_id=event_id))
+
 @bp.route('/genres', methods=['GET', 'POST'])
 @login_required
 def genres():

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Genres{% endblock %}
 {% block content %}
 <div class="container mt-5">
   <h2>Manage Genres</h2>
@@ -19,7 +20,6 @@
     {% for genre in genres %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
         {{ genre.title }}
-        <!-- Optional: add edit/delete buttons here -->
       </li>
     {% else %}
       <li class="list-group-item">No genres yet.</li>

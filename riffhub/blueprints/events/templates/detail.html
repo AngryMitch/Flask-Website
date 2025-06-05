@@ -145,9 +145,109 @@
 {% endif %}
 
 <div class="mt-5">
-    <h3>More Events</h3>
-    <div class="row row-cols-1 row-cols-md-4 g-4 mt-2">
-        <!-- We would fetch related events here -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Comments ({{ comments|length }})</h3>
+    </div>
+
+    <!-- Comment Form (only show if user is logged in) -->
+    {% if session.user_id and comment_form %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Add a Comment</h5>
+            <form method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
+                {{ comment_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ comment_form.body.label(class="form-label") }}
+                    {{ comment_form.body(class="form-control", rows="3", placeholder="Share your thoughts about this event...") }}
+                    {% for error in comment_form.body.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-end">
+                    {{ comment_form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    {% elif not session.user_id %}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle me-2"></i>
+        <a href="{{ url_for('auth.login') }}" class="alert-link">Login</a> to leave a comment about this event.
+    </div>
+    {% endif %}
+
+    <!-- Comments List -->
+    {% if comments %}
+    <div class="comments-list">
+        {% for comment in comments %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle me-2 text-muted fs-4"></i>
+                        <div>
+                            <h6 class="mb-0">{{ comment.user.username }}</h6>
+                            <small class="text-muted">{{ comment.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                        </div>
+                    </div>
+                    {% if session.user_id == comment.user_id or session.is_admin %}
+                    <div class="dropdown">
+                        <button class="btn btn-link btn-sm text-muted" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <button class="dropdown-item text-danger" onclick="deleteComment({{ comment.id }})">
+                                    <i class="bi bi-trash me-2"></i> Delete
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                <p class="card-text mb-0">{{ comment.body }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3">No comments yet. Be the first to share your thoughts!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete Comment Modal -->
+<div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this comment?</p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteCommentForm" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" class="btn btn-danger">Delete Comment</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+function deleteComment(commentId) {
+    const form = document.getElementById('deleteCommentForm');
+    form.action = "{{ url_for('events.delete_comment', event_id=event.id, comment_id=0) }}".replace('0', commentId);
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteCommentModal'));
+    modal.show();
+}
+</script>
 {% endblock %}
