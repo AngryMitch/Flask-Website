@@ -56,8 +56,13 @@ class Event(db.Model):
     # Check tickets sold
     @property
     def ticket_count(self):
-        """Count of tickets sold for this event"""
-        return db.session.query(db.func.sum(Ticket.quantity)).filter(Ticket.event_id == self.id).scalar() or 0
+        from riffhub.models import Order  # Import here to avoid circular imports
+        
+        return db.session.query(db.func.sum(Ticket.quantity))\
+            .join(Order)\
+            .filter(Ticket.event_id == self.id)\
+            .filter(Order.status == 'completed')\
+            .scalar() or 0
     
     # Check if event soldout
     @property

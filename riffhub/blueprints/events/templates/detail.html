@@ -15,7 +15,8 @@
     <div class="row g-0">
         {% if event.image %}
         <div class="col-md-5">
-            <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="img-fluid rounded-start" alt="{{ event.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+            <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="img-fluid rounded-start"
+                alt="{{ event.title }}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         {% endif %}
         <div class="col-md-{% if event.image %}7{% else %}12{% endif %}">
@@ -24,7 +25,8 @@
                     <h1 class="card-title">{{ event.title }}</h1>
                     {% if session.user_id == event.organizer_id or session.is_admin %}
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
                             <i class="bi bi-gear"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -34,7 +36,8 @@
                                 </a>
                             </li>
                             <li>
-                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <button class="dropdown-item text-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">
                                     <i class="bi bi-trash me-2"></i> Delete Event
                                 </button>
                             </li>
@@ -42,7 +45,7 @@
                     </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="d-flex flex-wrap gap-3 my-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-calendar me-2 text-primary"></i>
@@ -65,45 +68,47 @@
                         <span>Organized by {{ event.organizer.username }}</span>
                     </div>
                 </div>
-                
+
                 <hr>
-                
+
                 <h5>About this event</h5>
-                <p class="card-text">{{ event.description.replace('\n', '<br>') | safe  }}</p>
-                
+                <p class="card-text">{{ event.description.replace('\n', '<br>') | safe }}</p>
+
                 <div class="mt-4">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-people-fill me-2 text-primary"></i>
                         <span class="fs-5">{{ event.ticket_count }} tickets sold</span>
-                        
+
                         {% if event.capacity > 0 %}
                         <span class="badge bg-info ms-2">
                             {{ event.available_tickets }} of {{ event.capacity }} tickets available
                         </span>
                         {% endif %}
                     </div>
-                    
+
                     {% if session.user_id %}
-                        {% if has_tickets %}
-                        <div class="alert alert-success mb-3">
-                            <i class="bi bi-check-circle me-2"></i>
-                            You have {{ ticket_count }} ticket(s) for this event
-                        </div>
-                        <form action="{{ url_for('events.cancel_tickets', event_id=event.id) }}" method="post">
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="bi bi-calendar-x me-2"></i> Cancel My Tickets
-                            </button>
-                        </form>
-                        {% elif not event.is_full %}
-                        <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
-                            <i class="bi bi-ticket-perforated me-2"></i> Order Tickets
-                        </a>
-                        {% else %}
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            This event is sold out
-                        </div>
-                        {% endif %}
+                    {% if has_tickets %}
+                    <div class="alert alert-success mb-3">
+                        <i class="bi bi-check-circle me-2"></i>
+                        You have {{ ticket_count }} ticket(s) for this event
+                    </div>
+                    <form action="{{ url_for('events.cancel_tickets', event_id=event.id) }}" method="post"
+                        onsubmit="return confirm('Are you sure you want to cancel your tickets?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-calendar-x me-2"></i> Cancel My Tickets
+                        </button>
+                    </form>
+                    {% elif not event.is_full %}
+                    <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
+                        <i class="bi bi-ticket-perforated me-2"></i> Order Tickets
+                    </a>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        This event is sold out
+                    </div>
+                    {% endif %}
                     {% else %}
                     <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Login to Order Tickets

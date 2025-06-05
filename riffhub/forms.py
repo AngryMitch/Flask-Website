@@ -1,9 +1,7 @@
 from flask_wtf import FlaskForm
-
-from wtforms import DecimalField
 from wtforms.fields import (
     EmailField, StringField, PasswordField, SubmitField, 
-    TextAreaField, DateField, IntegerField, FileField, TimeField
+    TextAreaField, DateField, IntegerField, FileField, TimeField, DecimalField, HiddenField
 )
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, NumberRange, EqualTo, DataRequired, Optional
@@ -59,3 +57,7 @@ class OrderTicketsForm(FlaskForm):
     def __init__(self, max_tickets=100, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.quantity.validators.append(NumberRange(min=1, max=max_tickets, message=f"You can only order up to {max_tickets} tickets."))
+        
+class CancelTicketsForm(FlaskForm):
+    event_id = HiddenField('Event ID')
+    submit = SubmitField('Cancel')

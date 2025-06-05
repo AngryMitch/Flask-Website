@@ -5,7 +5,7 @@ from riffhub.models import Event, Genre, Order, Ticket, User, Comment, db
 from riffhub.helpers import login_required, save_image, utility_processor
 from datetime import datetime, date
 from sqlalchemy import func
-from riffhub.forms import EventForm, GenreForm, CommentForm, OrderTicketsForm
+from riffhub.forms import CancelTicketsForm, EventForm, GenreForm, CommentForm, OrderTicketsForm
 
 @bp.route('/')
 def list():
@@ -221,6 +221,8 @@ def my_tickets():
     user_orders = Order.query.filter_by(user_id=user_id).order_by(Order.order_date.desc()).all()
     
     order_details = []
+    cancel_forms = {}  # Dictionary to store forms by event_id
+    
     for order in user_orders:
         # Get all tickets for this order
         tickets_info = []
@@ -230,6 +232,13 @@ def my_tickets():
                 'ticket': ticket,
                 'event': event
             })
+            
+            # Create cancel form for this event if it's in the future
+            if event.date >= date.today() and order.status == 'completed':
+                if event.id not in cancel_forms:
+                    form = CancelTicketsForm()
+                    form.event_id.data = event.id
+                    cancel_forms[event.id] = form
         
         if tickets_info:  # Only add orders that have tickets
             order_details.append({
@@ -242,6 +251,7 @@ def my_tickets():
     
     return render_template('my_tickets.html', 
                           order_details=order_details,
+                          cancel_forms=cancel_forms,
                           current_date=current_date)
 
 @bp.route('/<int:event_id>/comment', methods=['POST'])
