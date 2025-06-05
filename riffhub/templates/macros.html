@@ -1,35 +1,62 @@
-{# Event card macro #}
-{% macro event_card(event, show_actions=False) %}
-<div class="card h-100 shadow-sm">
+{% macro event_card(event, current_date, show_actions=False) %}
+<div class="card h-100 event-card shadow-sm">
     {% if event.image %}
-    <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
+        <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
     {% else %}
-    <div class="bg-light text-center py-5">
-        <i class="bi bi-calendar-event text-primary" style="font-size: 3rem;"></i>
-    </div>
+        <img src="{{ url_for('static', filename='img/event-placeholder.jpg') }}" class="card-img-top" alt="Event placeholder" style="height: 200px; object-fit: cover;">
     {% endif %}
+
+    <!-- Event Status Badge -->
+    <div class="event-status position-absolute top-0 end-0 p-2">
+        {% if event.is_full %}
+            <span class="badge bg-danger">Sold Out</span>
+        {% elif event.date < current_date %}
+            <span class="badge bg-secondary">Inactive</span>
+        {% else %}
+            <span class="badge bg-success">Open</span>
+        {% endif %}
+    </div>
+
     <div class="card-body">
         <h5 class="card-title">{{ event.title }}</h5>
-        <p class="card-text text-muted">
-            <small>
-                <i class="bi bi-calendar me-1"></i> {{ event.date.strftime('%B %d, %Y') }}
-
+        <p class="card-text">
+            <small class="text-muted">
+                <i class="bi bi-calendar-event me-1"></i> {{ event.date.strftime('%d %b %Y') }}
                 {% if event.time %}
-                <br><i class="bi bi-clock me-1"></i> {{ event.time }}
+                    at {{ event.time }}
                 {% endif %}
-                {% if event.location %}
-                <br><i class="bi bi-geo-alt me-1"></i> {{ event.location }}
-                {% endif %}
+            </small><br>
+            {% if event.location %}
+            <small class="text-muted">
+                <i class="bi bi-geo-alt me-1"></i> {{ event.location }}
             </small>
+            {% endif %}
         </p>
-        <p class="card-text">{{ event.description|truncate(100) }}</p>
+
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            {% if event.price > 0 %}
+                <span class="badge bg-info text-dark">${{ "%.2f"|format(event.price) }}</span>
+            {% else %}
+                <span class="badge bg-light text-dark">Free</span>
+            {% endif %}
+
+            <span class="badge bg-primary">
+                {% if event.capacity > 0 %}
+                    {{ event.ticket_count }}/{{ event.capacity }} Tickets Sold
+                {% else %}
+                    {{ event.ticket_count }} Tickets Sold
+                {% endif %}
+            </span>
+        </div>
     </div>
-    <div class="card-footer d-flex justify-content-between align-items-center bg-white">
-        <small class="text-muted">
-            <i class="bi bi-people me-1"></i> {{ event.registration_count }} registered
-        </small>
-        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+
+    <div class="card-footer d-flex justify-content-between bg-white">
+        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-primary">View Details</a>
+        {% if show_actions and (session.user_id == event.organizer_id) %}
+            <a href="{{ url_for('events.edit', event_id=event.id) }}" class="btn btn-sm btn-secondary">Edit Event</a>
+        {% endif %}
     </div>
+
     {% if show_actions and (session.user_id == event.organizer_id) %}
     <div class="card-footer bg-white">
         <div class="d-flex justify-content-between">
@@ -40,7 +67,7 @@
                 <i class="bi bi-trash me-1"></i> Delete
             </button>
         </div>
-        
+
         <!-- Delete Modal -->
         <div class="modal fade" id="deleteModal{{ event.id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">

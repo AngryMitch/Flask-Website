@@ -72,3 +72,9 @@ def profile():
     
     user = User.query.get(session['user_id'])
     return render_template('profile.html', user=user)
+
+
+# Error handlers
+@bp.app_errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404

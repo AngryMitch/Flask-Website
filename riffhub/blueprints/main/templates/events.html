@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "macros.html" as macros %}
 
-{% block title %}Home | Event Manager{% endblock %}
+{% block title %}Home | Riffhub{% endblock %}
 
 {% block content %}
 <div class="row mb-4 align-items-center">
@@ -35,7 +35,7 @@
   <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for event in events %}
       <div class="col">
-        {{ macros.event_card(event) }}
+        {{ macros.event_card(event, current_date) }}
       </div>
     {% endfor %}
   </div>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "macros.html" as macros %}
 
-{% block title %}Home | Event Manager{% endblock %}
+{% block title %}Home | Riffhub{% endblock %}
 
 {% block header %}
 <div class="p-5 mb-4 bg-light rounded-3 text-center">
@@ -34,26 +34,25 @@
     </div>
     {% endif %}
     <div class="col-auto">
-    <form method="get" class="d-flex">
-      <select name="genre" class="form-select me-2">
-        <option value="">All Genres</option>
-        {% for g in genres %}
-          <option value="{{ g.id }}"
-            {% if selected_genre == g.id %}selected{% endif %}>
-            {{ g.title }}
-          </option>
-        {% endfor %}
-      </select>
-      <button type="submit" class="btn btn-outline-secondary">Filter</button>
-    </form>
-  </div>
+        <form method="get" class="d-flex">
+            <select name="genre" class="form-select me-2">
+                <option value="">All Genres</option>
+                {% for g in genres %}
+                <option value="{{ g.id }}" {% if selected_genre==g.id %}selected{% endif %}>
+                    {{ g.title }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline-secondary">Filter</button>
+        </form>
+    </div>
 </div>
 
 {% if events %}
 <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for event in events %}
     <div class="col">
-        {{ macros.event_card(event) }}
+        {{ macros.event_card(event, current_date) }}
     </div>
     {% endfor %}
 </div>
