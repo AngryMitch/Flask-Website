@@ -1,5 +1,6 @@
 # Main index page
 from flask import render_template, request
+from data_generator import create_sample_data
 from riffhub.blueprints.main import bp
 from riffhub.models import Event, Genre
 from datetime import datetime, date
@@ -33,6 +34,10 @@ def index():
         selected_genre=selected_genre
     )
 
+@bp.route('/create-sample-data')
+def create_sample_data_route():
+    create_sample_data()
+    return "Sample data created!"
 
 # Error handlers
 @bp.app_errorhandler(404)

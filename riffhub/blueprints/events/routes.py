@@ -5,7 +5,7 @@ from riffhub.models import Event, Genre, Order, Ticket, User, Comment, db
 from riffhub.helpers import login_required, save_image, utility_processor
 from datetime import datetime, date
 from sqlalchemy import func
-from riffhub.forms import CancelTicketsForm, EventForm, GenreForm, CommentForm, OrderTicketsForm
+from riffhub.forms import CancelTicketsForm, DeleteEventForm, EventForm, GenreForm, CommentForm, OrderTicketsForm
 
 @bp.route('/')
 def list():
@@ -42,6 +42,7 @@ def create():
             time        = form.time.data,
             location    = form.location.data,
             capacity    = form.capacity.data or 0,
+            price       = form.price.data or 0,
             image       = save_image(form.image.data) if form.image.data else None,
             organizer_id= session['user_id'],
             genre_id    = form.genre.data.id if form.genre.data else None
@@ -62,7 +63,7 @@ def detail(event_id):
     has_tickets = False
     ticket_count = 0
     if 'user_id' in session:
-        # Get all tickets for this user and event
+        # Get all tickets for this user and event (excluding cancelled orders)
         user_tickets = Ticket.query.join(Order).filter(
             Order.user_id == session['user_id'],
             Ticket.event_id == event_id,
@@ -77,8 +78,12 @@ def detail(event_id):
     
     # Create comment form if user is logged in
     comment_form = None
+    delete_form = None
     if 'user_id' in session:
         comment_form = CommentForm()
+        # Only create delete form if user is the organizer or admin
+        if (event.organizer_id == session['user_id'] or session.get('is_admin', False)):
+            delete_form = DeleteEventForm()
     
     # Format the date correctly for the template
     current_date = date.today()
@@ -89,6 +94,7 @@ def detail(event_id):
                           ticket_count=ticket_count,
                           comments=comments,
                           comment_form=comment_form,
+                          delete_form=delete_form,
                           current_date=current_date)
 
 @bp.route('/<int:event_id>/edit', methods=['GET', 'POST'])
@@ -161,9 +167,29 @@ def order_tickets(event_id):
         db.session.commit()
 
         flash(f'Successfully ordered {quantity} ticket(s)!', 'success')
-        return redirect(url_for('events.my_tickets'))
+        # Redirect to order confirmation page instead of my_tickets
+        return redirect(url_for('events.order_confirmation', order_id=order.id))
 
     return render_template('order_tickets.html', form=form, event=event)
+
+
+@bp.route('/order/<int:order_id>/confirmation')
+@login_required
+def order_confirmation(order_id):
+    """Display order confirmation page"""
+    order = Order.query.get_or_404(order_id)
+    
+    # Security check: ensure user owns this order
+    if order.user_id != session['user_id']:
+        flash('You do not have permission to view this order', 'danger')
+        return redirect(url_for('events.list'))
+    
+    # Add current_date to template context
+    current_date = date.today()
+    
+    return render_template('order_confirmation.html', 
+                          order=order, 
+                          current_date=current_date)
 
 @bp.route('/<int:event_id>/cancel', methods=['POST'])
 @login_required

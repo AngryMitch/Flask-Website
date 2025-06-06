@@ -18,7 +18,6 @@ class User(db.Model):
     events = db.relationship('Event', backref='organizer', lazy='dynamic', cascade='all, delete-orphan')
     orders = db.relationship('Order', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='user', lazy='dynamic', cascade='all, delete-orphan')
-    bands = db.relationship('Band', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     genres = db.relationship('Genre', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     
     @property
@@ -74,9 +73,8 @@ class Event(db.Model):
     # Relationships
     tickets = db.relationship('Ticket', backref='event', lazy='dynamic', cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='event', lazy='dynamic', cascade='all, delete-orphan')
-    performances = db.relationship('Performance', backref='event', lazy='dynamic', cascade='all, delete-orphan')
     
-    # Check tickets sold
+    # Check tickets sold (excluding cancelled orders)
     @property
     def ticket_count(self):
         from riffhub.models import Order  # Import here to avoid circular imports
@@ -158,34 +156,3 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'
-
-
-# Band Model
-class Band(db.Model):
-    __tablename__ = 'bands'    
-
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    title = db.Column(db.String(20), nullable=False)
-    
-    # Relationships
-    performances = db.relationship('Performance', backref='band', lazy='dynamic', cascade='all, delete-orphan')
-    
-    def __repr__(self):
-        return f'<Band {self.title}>'
-
-
-# Performance Model (Band "performing" at an Event)
-class Performance(db.Model):
-    __tablename__ = 'performances'
-
-
-    id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    band_id = db.Column(db.Integer, db.ForeignKey('bands.id'), nullable=False)
-    
-    # Note: backref relationships are defined in Event and Band models
-    
-    def __repr__(self):
-        return f'<Performance: Band {self.band_id} at Event {self.event_id}>'

@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, session, request
 from riffhub.blueprints.auth import bp
-from riffhub.forms import LoginForm, RegisterForm, ProfileEditForm, ChangePasswordForm, BandForm
-from riffhub.models import User, Event, Order, Band, Genre, db
+from riffhub.forms import LoginForm, RegisterForm, ProfileEditForm, ChangePasswordForm
+from riffhub.models import User, Event, Order,db
 from sqlalchemy import desc
 
 
@@ -80,9 +80,6 @@ def profile():
     # Get user's orders with event details
     orders = user.orders.order_by(desc(Order.order_date)).all()
     
-    # Get user's bands
-    bands = user.bands.all()
-    
     # Get user's genres
     genres = user.genres.all()
     
@@ -97,7 +94,6 @@ def profile():
                          events_organized=events_organized,
                          total_tickets_sold=total_tickets_sold,
                          orders=orders,
-                         bands=bands,
                          genres=genres,
                          recent_events=recent_events,
                          recent_comments=recent_comments)

@@ -3,41 +3,75 @@
 {% block title %}Create Event{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2>Create Event</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-5">
+          <h2 class="mb-4 text-center">Create a New Event</h2>
+          <form method="POST" enctype="multipart/form-data" novalidate>
+            {{ form.hidden_tag() }}
 
-    <div class="mb-3">
-      {{ form.title.label }} {{ form.title(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.description.label }} {{ form.description(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.genre.label }} {{ form.genre(class="form-select") }}
-      <small class="form-text text-muted">
-        Can't find the genre you're looking for?
-        <a href="{{ url_for('events.genres') }}">Manage genres</a>
-      </small>
-    </div>
-    <div class="mb-3">
-      {{ form.date.label }} {{ form.date(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.time.label }} {{ form.time(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.location.label }} {{ form.location(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.capacity.label }} {{ form.capacity(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.image.label }} {{ form.image(class="form-control") }}
-    </div>
+            <div class="mb-3">
+              {{ form.title.label(class="form-label fw-semibold") }}
+              {{ form.title(class="form-control", placeholder="Event Title") }}
+            </div>
 
-    <button type="submit" class="btn btn-primary">Create Event</button>
-  </form>
+            <div class="mb-3">
+              {{ form.description.label(class="form-label fw-semibold") }}
+              {{ form.description(class="form-control", rows="4", placeholder="Event Description (optional)") }}
+            </div>
+
+            <div class="mb-3">
+              {{ form.genre.label(class="form-label fw-semibold") }}
+              {{ form.genre(class="form-select") }}
+              <small class="form-text text-muted">
+                Can’t find the genre you’re looking for?
+                <a href="{{ url_for('events.genres') }}">Manage genres</a>
+              </small>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.date.label(class="form-label fw-semibold") }}
+                {{ form.date(class="form-control") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.time.label(class="form-label fw-semibold") }}
+                {{ form.time(class="form-control") }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {{ form.location.label(class="form-label fw-semibold") }}
+              {{ form.location(class="form-control", placeholder="Venue or Address") }}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                {{ form.capacity.label(class="form-label fw-semibold") }}
+                {{ form.capacity(class="form-control", placeholder="Optional") }}
+              </div>
+              <div class="col-md-6 mb-3">
+                {{ form.price.label(class="form-label fw-semibold") }}
+                {{ form.price(class="form-control", placeholder="e.g., 25.00") }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              {{ form.image.label(class="form-label fw-semibold") }}
+              {{ form.image(class="form-control") }}
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-calendar-plus me-2"></i> Create Event
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

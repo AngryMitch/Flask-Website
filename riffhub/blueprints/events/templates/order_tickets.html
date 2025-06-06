@@ -35,22 +35,11 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label"><strong>Total:</strong> $<span id="total">{{ '%.2f' | format(event.price) }}</span></label>
+      <label class="form-label"><strong>Total:</strong> ${{ '%.2f' | format(event.price) }}</label>
     </div>
 
     {{ form.submit(class="btn btn-primary") }}
     <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-secondary ms-2">Back to Event</a>
   </form>
 </div>
-
-<script>
-  const price = {{ event.price|tojson }};
-  const quantityInput = document.getElementById('quantity');
-  const totalSpan = document.getElementById('total');
-
-  quantityInput.addEventListener('input', () => {
-    const qty = parseInt(quantityInput.value) || 1;
-    totalSpan.textContent = (qty * price).toFixed(2);
-  });
-</script>
 {% endblock %}

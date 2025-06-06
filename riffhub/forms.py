@@ -6,17 +6,12 @@ from wtforms.fields import (
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired, NumberRange, EqualTo, DataRequired, Optional, Length, Regexp
 
-
 from riffhub.models import Genre
-
-
-
 
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
     submit = SubmitField("Login")
-
 
 class RegisterForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired()])
@@ -25,13 +20,9 @@ class RegisterForm(FlaskForm):
     confirm = PasswordField("Confirm Password", validators=[InputRequired(), EqualTo('password', "Please ensure your passwords are the same")])
     submit = SubmitField("Register")
 
-
 class CommentForm(FlaskForm):
     body = StringField("Comment", validators=[InputRequired()])
     submit = SubmitField("Post Comment")
-
-
-
 
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
@@ -111,6 +102,5 @@ class ChangePasswordForm(FlaskForm):
     submit = SubmitField("Change Password")
 
 
-class BandForm(FlaskForm):
-    title = StringField('Band Name', validators=[DataRequired()])
-    submit = SubmitField('Add Band')
+class DeleteEventForm(FlaskForm):
+    submit = SubmitField('Delete Event')

@@ -40,13 +40,22 @@
                         {% for ticket_info in order_info.tickets %}
                         <tr>
                             <td>
-                                <span class="badge bg-info text-dark order-id">#{{ order_info.order.id }}</span>
+                                <a href="{{ url_for('events.order_confirmation', order_id=order_info.order.id) }}"
+                                    class="badge bg-info text-dark order-id text-decoration-none">#{{
+                                    order_info.order.id }}</a>
                             </td>
                             <td>
-                                <a href="{{ url_for('events.detail', event_id=ticket_info.event.id) }}"
+                                <a href="{{ url_for('events.order_confirmation', order_id=order_info.order.id) }}"
                                     class="fw-bold text-decoration-none">
                                     {{ ticket_info.event.title }}
                                 </a>
+                                <br>
+                                <small class="text-muted">
+                                    <a href="{{ url_for('events.detail', event_id=ticket_info.event.id) }}"
+                                        class="text-muted text-decoration-none">
+                                        <i class="bi bi-arrow-right"></i> View Event Details
+                                    </a>
+                                </small>
                             </td>
                             <td>
                                 <span class="d-flex align-items-center">
