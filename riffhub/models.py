@@ -3,6 +3,7 @@ from sqlalchemy import Time
 from werkzeug.security import generate_password_hash, check_password_hash
 from riffhub.extensions import db
 
+
 # User Model
 class User(db.Model):
     __tablename__ = 'users'
@@ -36,9 +37,11 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
+
 # Genre Model (moved up because Event references it)
 class Genre(db.Model):
     __tablename__ = 'genres'
+
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20), nullable=False)
@@ -49,6 +52,7 @@ class Genre(db.Model):
     
     def __repr__(self):
         return f'<Genre {self.title}>'
+
 
 # Event Model
 class Event(db.Model):
@@ -100,6 +104,7 @@ class Event(db.Model):
     def __repr__(self):
         return f'<Event {self.title}>'
 
+
 # Order Model
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -120,6 +125,7 @@ class Order(db.Model):
     def __repr__(self):
         return f'<Order {self.id} by User {self.user_id}>'
 
+
 # Ticket Model
 class Ticket(db.Model):
     __tablename__ = 'tickets'
@@ -139,20 +145,25 @@ class Ticket(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comments'
 
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     body = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+
     # Note: backref relationships are defined in User and Event models
+
 
     def __repr__(self):
         return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'
 
+
 # Band Model
 class Band(db.Model):
     __tablename__ = 'bands'    
+
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -164,9 +175,11 @@ class Band(db.Model):
     def __repr__(self):
         return f'<Band {self.title}>'
 
+
 # Performance Model (Band "performing" at an Event)
 class Performance(db.Model):
     __tablename__ = 'performances'
+
 
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)

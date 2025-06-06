@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Profile Header -->
+    <div class="profile-header mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <div class="profile-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h1 class="mb-2">{{ user.username }}</h1>
+                <p class="text-muted mb-1">
+                    <i class="bi bi-envelope me-2"></i>{{ user.email }}
+                </p>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-calendar-check me-2"></i>Member since {{ user.created_at.strftime('%B %Y') }}
+                </p>
+            </div>
+            <div class="col-md-3">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-primary">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                    </a>
+                    <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-key me-2"></i>Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-primary">{{ events_organized }}</div>
+                    <div class="stat-label text-muted">Events Organized</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-success">{{ total_tickets_sold }}</div>
+                    <div class="stat-label text-muted">Tickets Sold</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-info">{{ orders|length }}</div>
+                    <div class="stat-label text-muted">Orders Placed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Recent Events Organized -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-plus me-2"></i>Recent Events Organized
+                    </h5>
+                    <a href="{{ url_for('events.create') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>New Event
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_events %}
+                    {% for event in recent_events %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">{{ event.title }}</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>{{ event.date.strftime('%B %d, %Y') }} at {{
+                                    event.time.strftime('%I:%M %p') }}
+                                </small>
+                                {% if event.location %}
+                                <br><small class="text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>{{ event.location }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge bg-primary">{{ event.ticket_count }} tickets sold</span>
+                                {% if event.capacity > 0 %}
+                                <br><small class="text-muted">{{ event.available_tickets }} remaining</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if events_organized > 5 %}
+                    <div class="text-center">
+                        <a href="{{ url_for('events.my_events') }}" class="btn btn-outline-primary">
+                            View All Events ({{ events_organized }})
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="icon">
+                            <i class="bi bi-calendar-x"></i>
+                        </div>
+                        <h3>No Events Created</h3>
+                        <p class="text-muted">You haven't organized any events yet.</p>
+                        <a href="{{ url_for('events.create') }}" class="btn btn-primary mt-3">Create Your First
+                            Event</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-ticket-perforated me-2"></i>Recent Ticket Orders
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                    {% for order in orders[:5] %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">Order #{{ order.id }}</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>{{ order.order_date.strftime('%B %d, %Y at %I:%M
+                                    %p') }}
+                                </small>
+                                <div class="mt-1">
+                                    {% for ticket in order.tickets %}
+                                    <small class="d-block text-muted">
+                                        {{ ticket.quantity }} ticket(s) for {{ ticket.event.title }}
+                                    </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge bg-{{ 'success' if order.status == 'completed' else 'warning' }}">
+                                    {{ order.status.title() }}
+                                </span>
+                                <br><small class="text-muted">{{ order.total_tickets }} ticket(s)</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if orders|length > 5 %}
+                    <div class="text-center">
+                        <a href="{{ url_for('events.my_tickets') }}" class="btn btn-outline-primary">
+                            View All Orders ({{ orders|length }})
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="icon">
+                            <i class="bi bi-ticket-perforated-fill"></i>
+                        </div>
+                        <h3>No Orders Yet</h3>
+                        <p class="text-muted">You haven't purchased any tickets yet.</p>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Browse Events</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Genres -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tags me-2"></i>My Genres
+                    </h5>
+                    <a href="{{ url_for('events.genres') }}" class="btn btn-info btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>Add Genre
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if genres %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for genre in genres %}
+                        <span class="badge bg-secondary fs-6">{{ genre.title }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="icon">
+                            <i class="bi bi-tags-fill"></i>
+                        </div>
+                        <h3>No Genres Yet</h3>
+                        <p class="text-muted">Add genres to categorize your events.</p>
+                        <a href="{{ url_for('events.create') }}" class="btn btn-info mt-3">Add Your First Genre</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Comments -->
+            {% if recent_comments %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-dots me-2"></i>Recent Comments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for comment in recent_comments %}
+                    <div class="border-start border-primary border-3 ps-3 mb-3">
+                        <small class="text-muted d-block">On {{ comment.event.title }}</small>
+                        <p class="mb-1">{{ comment.body }}</p>
+                        <small class="text-muted">{{ comment.created_at.strftime('%B %d, %Y') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+    }
+
+    .profile-avatar {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+    }
+
+    .empty-state .icon {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .profile-header {
+            text-align: center;
+        }
+
+        .profile-header .col-md-3 {
+            margin-top: 1rem;
+        }
+    }
+</style>
+{% endblock %}
