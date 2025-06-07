@@ -15,21 +15,64 @@
             </div>
             <div class="col-md-7">
                 <h1 class="mb-2">{{ user.username }}</h1>
-                <p class="text-muted mb-1">
+                <p class="text-white mb-1">
+                    <i class="bi bi-person me-2"></i>{{ user.full_name }}
+                </p>
+                <p class="text-white mb-1">
                     <i class="bi bi-envelope me-2"></i>{{ user.email }}
                 </p>
-                <p class="text-muted mb-0">
+                <p class="text-white mb-1">
+                    <i class="bi bi-phone me-2"></i>{{ user.contact_number }}
+                </p>
+                <p class="text-white mb-0">
                     <i class="bi bi-calendar-check me-2"></i>Member since {{ user.created_at.strftime('%B %Y') }}
                 </p>
             </div>
             <div class="col-md-3">
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-primary">
+                    <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-light">
                         <i class="bi bi-pencil-square me-2"></i>Edit Profile
                     </a>
-                    <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-light">
                         <i class="bi bi-key me-2"></i>Change Password
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Information Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-lines-fill me-2"></i>Contact Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Full Name</h6>
+                            <p class="text-muted">{{ user.full_name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Email</h6>
+                            <p class="text-muted">{{ user.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Contact Number</h6>
+                            <p class="text-muted">{{ user.contact_number }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Member Since</h6>
+                            <p class="text-muted">{{ user.created_at.strftime('%B %d, %Y') }}</p>
+                        </div>
+                        <div class="col-12">
+                            <h6 class="fw-bold">Address</h6>
+                            <p class="text-muted">{{ user.street_address }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -205,7 +248,7 @@
                         </div>
                         <h3>No Genres Yet</h3>
                         <p class="text-muted">Add genres to categorize your events.</p>
-                        <a href="{{ url_for('events.create') }}" class="btn btn-info mt-3">Add Your First Genre</a>
+                        <a href="{{ url_for('events.genres') }}" class="btn btn-info mt-3">Add Your First Genre</a>
                     </div>
                     {% endif %}
                 </div>
@@ -275,6 +318,18 @@
         margin-bottom: 0.5rem;
     }
 
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, .125);
+        border-radius: 1rem 1rem 0 0 !important;
+    }
+
     @media (max-width: 768px) {
         .profile-header {
             text-align: center;
@@ -285,4 +340,4 @@
         }
     }
 </style>
-{% endblock %}
+{% endblock %}s

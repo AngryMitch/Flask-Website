@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-5" style="max-width: 400px;">
+<div class="container mt-5" style="max-width: 600px;">
     <h2 class="mb-4 text-center">Register</h2>
     <form method="POST" action="{{ url_for('auth.register') }}">
         {{ form.csrf_token }}
+        
+        <!-- Username -->
         <div class="mb-3">
             <label for="{{ form.username.id }}" class="form-label">Username</label>
             {{ form.username(class="form-control") }}
@@ -15,6 +17,8 @@
                 </div>
             {% endif %}
         </div>
+        
+        <!-- Email -->
         <div class="mb-3">
             <label for="{{ form.email.id }}" class="form-label">Email</label>
             {{ form.email(class="form-control") }}
@@ -26,6 +30,64 @@
                 </div>
             {% endif %}
         </div>
+        
+        <!-- First Name and Surname -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.first_name.id }}" class="form-label">First Name</label>
+                    {{ form.first_name(class="form-control") }}
+                    {% if form.first_name.errors %}
+                        <div class="text-danger small">
+                            {% for error in form.first_name.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ form.surname.id }}" class="form-label">Surname</label>
+                    {{ form.surname(class="form-control") }}
+                    {% if form.surname.errors %}
+                        <div class="text-danger small">
+                            {% for error in form.surname.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Number -->
+        <div class="mb-3">
+            <label for="{{ form.contact_number.id }}" class="form-label">Contact Number</label>
+            {{ form.contact_number(class="form-control", placeholder="+1 (555) 123-4567") }}
+            {% if form.contact_number.errors %}
+                <div class="text-danger small">
+                    {% for error in form.contact_number.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Street Address -->
+        <div class="mb-3">
+            <label for="{{ form.street_address.id }}" class="form-label">Street Address</label>
+            {{ form.street_address(class="form-control", rows="3", placeholder="123 Main Street, City, State/Province, Country") }}
+            {% if form.street_address.errors %}
+                <div class="text-danger small">
+                    {% for error in form.street_address.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Password -->
         <div class="mb-3">
             <label for="{{ form.password.id }}" class="form-label">Password</label>
             {{ form.password(class="form-control") }}
@@ -37,6 +99,8 @@
                 </div>
             {% endif %}
         </div>
+        
+        <!-- Confirm Password -->
         <div class="mb-3">
             <label for="{{ form.confirm.id }}" class="form-label">Confirm Password</label>
             {{ form.confirm(class="form-control") }}
@@ -48,6 +112,7 @@
                 </div>
             {% endif %}
         </div>
+        
         {{ form.submit(class="btn btn-success w-100") }}
     </form>
 
@@ -55,4 +120,23 @@
         <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
     </div>
 </div>
+
+<style>
+    .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #157347 0%, #1aa085 100%);
+        transform: translateY(-1px);
+    }
+</style>
 {% endblock %}

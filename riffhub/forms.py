@@ -14,10 +14,36 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 class RegisterForm(FlaskForm):
-    username = StringField("Username", validators=[InputRequired()])
+    username = StringField("Username", validators=[
+        InputRequired(),
+        Length(min=3, max=80, message="Username must be between 3 and 80 characters")
+    ])
     email = EmailField("Email", validators=[InputRequired()])
-    password = PasswordField("Password", validators=[InputRequired()])
-    confirm = PasswordField("Confirm Password", validators=[InputRequired(), EqualTo('password', "Please ensure your passwords are the same")])
+    first_name = StringField("First Name", validators=[
+        InputRequired(),
+        Length(min=1, max=50, message="First name must be between 1 and 50 characters")
+    ])
+    surname = StringField("Surname", validators=[
+        InputRequired(),
+        Length(min=1, max=50, message="Surname must be between 1 and 50 characters")
+    ])
+    contact_number = StringField("Contact Number", validators=[
+        InputRequired(),
+        Length(min=10, max=20, message="Contact number must be between 10 and 20 characters"),
+        Regexp(r'^[\d\s\-\+\(\)]+$', message="Contact number can only contain digits, spaces, hyphens, plus signs, and parentheses")
+    ])
+    street_address = TextAreaField("Street Address", validators=[
+        InputRequired(),
+        Length(min=5, max=200, message="Street address must be between 5 and 200 characters")
+    ])
+    password = PasswordField("Password", validators=[
+        InputRequired(),
+        Length(min=6, message="Password must be at least 6 characters long")
+    ])
+    confirm = PasswordField("Confirm Password", validators=[
+        InputRequired(), 
+        EqualTo('password', "Please ensure your passwords are the same")
+    ])
     submit = SubmitField("Register")
 
 class CommentForm(FlaskForm):

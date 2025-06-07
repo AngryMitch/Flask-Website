@@ -13,6 +13,10 @@ def register():
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
+        first_name = form.first_name.data
+        surname = form.surname.data
+        contact_number = form.contact_number.data
+        street_address = form.street_address.data
         password = form.password.data
         
         # Check if username or email already exists
@@ -21,8 +25,15 @@ def register():
             flash('Username or email already exists!', 'danger')
             return redirect(url_for('auth.register'))
         
-        # Create new user
-        new_user = User(username=username, email=email)
+        # Create new user with all required fields
+        new_user = User(
+            username=username, 
+            email=email,
+            first_name=first_name,
+            surname=surname,
+            contact_number=contact_number,
+            street_address=street_address
+        )
         new_user.password = password  # This will hash the password
         
         db.session.add(new_user)
@@ -120,8 +131,13 @@ def edit_profile():
             flash('Username or email already exists!', 'danger')
             return render_template('edit_profile.html', form=form, user=user)
         
+        # Update all user fields
         user.username = form.username.data
         user.email = form.email.data
+        user.first_name = form.first_name.data
+        user.surname = form.surname.data
+        user.contact_number = form.contact_number.data
+        user.street_address = form.street_address.data
         session['username'] = user.username  # Update session
         
         db.session.commit()
@@ -184,3 +200,7 @@ def delete_account():
 @bp.app_errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@bp.app_errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500

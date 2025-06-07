@@ -12,6 +12,10 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    surname = db.Column(db.String(50), nullable=False)
+    contact_number = db.Column(db.String(20), nullable=False)
+    street_address = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -33,6 +37,10 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
     
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.surname}"
+    
     def __repr__(self):
         return f'<User {self.username}>'
 
@@ -40,7 +48,6 @@ class User(db.Model):
 # Genre Model (moved up because Event references it)
 class Genre(db.Model):
     __tablename__ = 'genres'
-
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20), nullable=False)
@@ -143,16 +150,13 @@ class Ticket(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comments'
 
-
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
     body = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
     # Note: backref relationships are defined in User and Event models
-
 
     def __repr__(self):
         return f'<Comment {self.id}, by User {self.user_id} for Event {self.event_id}>'
