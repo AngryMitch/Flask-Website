@@ -3,6 +3,7 @@
 {% block title %}{{ event.title }} | Riffhub{% endblock %}
 
 {% block content %}
+<!-- Breadcrumb navigation for page hierarchy -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
@@ -11,22 +12,28 @@
     </ol>
 </nav>
 
+<!-- Event detail card -->
 <div class="card shadow mb-4">
     <div class="row g-0">
         {% if event.image %}
+        <!-- Event image if uploaded -->
         <div class="col-md-5">
             <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="img-fluid rounded-start"
                 alt="{{ event.title }}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         {% else %}
+        <!-- Placeholder image when no event image exists -->
         <img src="{{ url_for('static', filename='img/event-placeholder.jpg') }}" class="card-img-top"
             alt="Event placeholder" style="height: 200px; object-fit: cover;">
         {% endif %}
         <div class="col-md-{% if event.image %}7{% else %}12{% endif %}">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
+                    <!-- Event title -->
                     <h1 class="card-title">{{ event.title }}</h1>
+
                     {% if session.user_id == event.organizer_id or session.is_admin %}
+                    <!-- Event management dropdown for organizer/admin -->
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                             data-bs-toggle="dropdown">
@@ -49,6 +56,7 @@
                     {% endif %}
                 </div>
 
+                <!-- Event meta details: date, time, location, organizer -->
                 <div class="d-flex flex-wrap gap-3 my-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-calendar me-2 text-primary"></i>
@@ -74,10 +82,12 @@
 
                 <hr>
 
+                <!-- Event description -->
                 <h5>About this event</h5>
                 <p class="card-text">{{ event.description.replace('\n', '<br>') | safe }}</p>
 
                 <div class="mt-4">
+                    <!-- Ticket sales summary -->
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-people-fill me-2 text-primary"></i>
                         <span class="fs-5">{{ event.ticket_count }} tickets sold</span>
@@ -90,43 +100,48 @@
                     </div>
 
                     {% if session.user_id %}
-                    {% if has_tickets %}
-                    <div class="alert alert-success mb-3">
-                        <i class="bi bi-check-circle me-2"></i>
-                        You have {{ ticket_count }} ticket(s) for this event
-                    </div>
-                    <div class="d-flex gap-2">
-                        <form action="{{ url_for('events.cancel_tickets', event_id=event.id) }}" method="post"
-                            onsubmit="return confirm('Are you sure you want to cancel your tickets?');">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="bi bi-calendar-x me-2"></i> Cancel My Tickets
-                            </button>
-                        </form>
+                        {% if has_tickets %}
+                        <!-- User's existing tickets info with actions -->
+                        <div class="alert alert-success mb-3">
+                            <i class="bi bi-check-circle me-2"></i>
+                            You have {{ ticket_count }} ticket(s) for this event
+                        </div>
+                        <div class="d-flex gap-2">
+                            <form action="{{ url_for('events.cancel_tickets', event_id=event.id) }}" method="post"
+                                onsubmit="return confirm('Are you sure you want to cancel your tickets?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-calendar-x me-2"></i> Cancel My Tickets
+                                </button>
+                            </form>
+                            <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
+                                <i class="bi bi-ticket-perforated me-2"></i> Order More Tickets
+                            </a>
+                        </div>
+                        {% elif event.is_full %}
+                        <!-- Sold out event notice -->
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            This event is sold out
+                        </div>
+                        {% else %}
+                        <!-- Call to action to order tickets -->
                         <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
-                            <i class="bi bi-ticket-perforated me-2"></i> Order More Tickets
+                            <i class="bi bi-ticket-perforated me-2"></i> Order Tickets
                         </a>
-                    </div>
-                    {% elif event.is_full %}
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        This event is sold out
-                    </div>
+                        {% endif %}
                     {% else %}
-                    <a href="{{ url_for('events.order_tickets', event_id=event.id) }}" class="btn btn-primary">
-                        <i class="bi bi-ticket-perforated me-2"></i> Order Tickets
-                    </a>
-                    {% endif %}
-                    {% else %}
-                    {% if event.is_full %}
-                    <div class="alert alert-warning mb-3">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        This event is sold out
-                    </div>
-                    {% endif %}
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login to Order Tickets
-                    </a>
+                        {% if event.is_full %}
+                        <!-- Sold out notice for guests -->
+                        <div class="alert alert-warning mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            This event is sold out
+                        </div>
+                        {% endif %}
+                        <!-- Prompt guest to log in to order tickets -->
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Login to Order Tickets
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -134,7 +149,7 @@
     </div>
 </div>
 
-<!-- Delete Modal -->
+<!-- Delete confirmation modal, only for organizer/admin -->
 {% if session.user_id == event.organizer_id or session.is_admin %}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -161,10 +176,11 @@
 
 <div class="mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Comments section header with count -->
         <h3>Comments ({{ comments|length }})</h3>
     </div>
 
-    <!-- Comment Form (only show if user is logged in) -->
+    <!-- Comment submission form (visible to logged-in users) -->
     {% if session.user_id and comment_form %}
     <div class="card mb-4">
         <div class="card-body">
@@ -185,13 +201,14 @@
         </div>
     </div>
     {% elif not session.user_id %}
+    <!-- Prompt guests to log in to comment -->
     <div class="alert alert-info mb-4">
         <i class="bi bi-info-circle me-2"></i>
         <a href="{{ url_for('auth.login') }}" class="alert-link">Login</a> to leave a comment about this event.
     </div>
     {% endif %}
 
-    <!-- Comments List -->
+    <!-- List of existing comments -->
     {% if comments %}
     <div class="comments-list">
         {% for comment in comments %}
@@ -206,6 +223,7 @@
                         </div>
                     </div>
                     {% if session.user_id == comment.user_id or session.is_admin %}
+                    <!-- Comment management dropdown for author/admin -->
                     <div class="dropdown">
                         <button class="btn btn-link btn-sm text-muted" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-three-dots"></i>
@@ -232,6 +250,7 @@
         {% endfor %}
     </div>
     {% else %}
+    <!-- No comments placeholder -->
     <div class="text-center py-5">
         <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
         <p class="text-muted mt-3">No comments yet. Be the first to share your thoughts!</p>

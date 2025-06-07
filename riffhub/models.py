@@ -45,7 +45,7 @@ class User(db.Model):
         return f'<User {self.username}>'
 
 
-# Genre Model (moved up because Event references it)
+# Genre Model
 class Genre(db.Model):
     __tablename__ = 'genres'
 
@@ -84,7 +84,7 @@ class Event(db.Model):
     # Check tickets sold (excluding cancelled orders)
     @property
     def ticket_count(self):
-        from riffhub.models import Order  # Import here to avoid circular imports
+        from riffhub.models import Order  # Importing here to avoid circular imports
         
         return db.session.query(db.func.sum(Ticket.quantity))\
             .join(Order)\

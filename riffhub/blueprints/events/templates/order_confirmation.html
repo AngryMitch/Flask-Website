@@ -3,12 +3,13 @@
 {% block title %}Order Confirmation{% endblock %}
 
 {% block content %}
-<!-- Order Summary -->
+<!-- Order Summary Section -->
 <div class="row mb-4">
     <div class="col-md-6">
         <h5 class="text-primary">Order Information</h5>
+        <!-- Display the date and time when the order was placed -->
         <p class="mb-1"><strong>Order Date:</strong> {{ order.order_date.strftime('%B %d, %Y at %I:%M %p') }}</p>
-        <!-- Order Status Badge -->
+        <!-- Display order status with a color-coded badge -->
         <p class="mb-1"><strong>Status:</strong>
             {% if order.status == 'cancelled' %}
             <span class="badge bg-warning">Cancelled</span>
@@ -16,16 +17,20 @@
             <span class="badge bg-success">Confirmed</span>
             {% endif %}
         </p>
+        <!-- Total number of tickets ordered -->
         <p class="mb-1"><strong>Total Tickets:</strong> {{ order.total_tickets }}</p>
     </div>
+
     <div class="col-md-6">
         <h5 class="text-primary">Customer Information</h5>
+        <!-- Display customer's username -->
         <p class="mb-1"><strong>Name:</strong> {{ order.user.username }}</p>
+        <!-- Display customer's email -->
         <p class="mb-1"><strong>Email:</strong> {{ order.user.email }}</p>
     </div>
 </div>
 
-<!-- Event Details -->
+<!-- Event Details for each ticket in the order -->
 {% for ticket in order.tickets %}
 <div class="border rounded p-3 mb-3 bg-light">
     <div class="row">
@@ -34,7 +39,7 @@
                 <h5 class="text-dark mb-0">
                     <i class="fas fa-music me-2"></i>
                     {{ ticket.event.title }}
-                    <!-- Event Status Badge - now inside the loop where ticket is defined -->
+                    <!-- Display event status badge based on order and event conditions -->
                     {% if order.status == 'cancelled' %}
                     <span class="badge bg-warning ms-2">Cancelled</span>
                     {% elif ticket.event.date < current_date %}
@@ -47,29 +52,33 @@
                 </h5>
             </div>
 
+            <!-- Event description snippet (first 100 characters) -->
             {% if ticket.event.description %}
-            <p class="text-muted mb-2">{{ ticket.event.description[:100] }}{% if
-                ticket.event.description|length > 100 %}...{% endif %}</p>
+            <p class="text-muted mb-2">{{ ticket.event.description[:100] }}{% if ticket.event.description|length > 100 %}...{% endif %}</p>
             {% endif %}
 
             <div class="row">
                 <div class="col-sm-6">
+                    <!-- Event date -->
                     <p class="mb-1">
                         <i class="fas fa-calendar me-1"></i>
                         <strong>Date:</strong> {{ ticket.event.date.strftime('%B %d, %Y') }}
                     </p>
+                    <!-- Event time -->
                     <p class="mb-1">
                         <i class="fas fa-clock me-1"></i>
                         <strong>Time:</strong> {{ ticket.event.time.strftime('%I:%M %p') }}
                     </p>
                 </div>
                 <div class="col-sm-6">
+                    <!-- Event location, if available -->
                     {% if ticket.event.location %}
                     <p class="mb-1">
                         <i class="fas fa-map-marker-alt me-1"></i>
                         <strong>Location:</strong> {{ ticket.event.location }}
                     </p>
                     {% endif %}
+                    <!-- Event genre, if available -->
                     {% if ticket.event.genre %}
                     <p class="mb-1">
                         <i class="fas fa-tags me-1"></i>
@@ -81,12 +90,14 @@
         </div>
 
         <div class="col-md-4 text-md-end">
+            <!-- Event image, if available -->
             {% if ticket.event.image %}
             <img src="{{ url_for('static', filename='uploads/' + ticket.event.image) }}"
                 alt="{{ ticket.event.title }}" class="img-fluid rounded mb-2"
                 style="max-height: 120px; object-fit: cover;">
             {% endif %}
 
+            <!-- Ticket quantity, price, and subtotal -->
             <div class="mt-2">
                 <p class="mb-1"><strong>Quantity:</strong> {{ ticket.quantity }}</p>
                 <p class="mb-1"><strong>Price per ticket:</strong> ${{ '%.2f' | format(ticket.event.price) }}</p>
@@ -100,35 +111,38 @@
 </div>
 {% endfor %}
 
-<!-- Custom CSS for print -->
+<!-- Custom CSS for print styling and general badge appearance -->
 <style>
     @media print {
-
+        /* Hide buttons and alerts when printing */
         .btn,
         .alert-dismissible .btn-close,
         .alert-info {
             display: none !important;
         }
-
+        /* Add border and remove shadows for cards in print */
         .card {
             border: 2px solid #000 !important;
             box-shadow: none !important;
         }
-
+        /* Card header styling for print */
         .card-header {
             background-color: #000 !important;
             color: #fff !important;
         }
     }
 
+    /* Badge font size */
     .badge {
         font-size: 0.875em;
     }
 
+    /* Card header font size */
     .card-header h3 {
         font-size: 1.5rem;
     }
 
+    /* Background and text color classes */
     .bg-light {
         background-color: #f8f9fa !important;
     }
@@ -142,5 +156,6 @@
     }
 </style>
 
+<!-- FontAwesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}

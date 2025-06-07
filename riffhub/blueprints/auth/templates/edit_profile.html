@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="container my-5">
-    <!-- Page Header -->
+    <!-- Page header with back button and page title -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex align-items-center mb-3">
@@ -19,7 +19,7 @@
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <!-- Profile Edit Form -->
+            <!-- Profile edit form card -->
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
@@ -28,9 +28,9 @@
                 </div>
                 <div class="card-body p-4">
                     <form method="POST" enctype="multipart/form-data">
-                        {{ form.hidden_tag() }}
+                        {{ form.hidden_tag() }}  {# CSRF token and hidden fields #}
 
-                        <!-- Profile Avatar Section -->
+                        <!-- Avatar and user full name -->
                         <div class="text-center mb-4">
                             <div class="profile-avatar-large mb-3">
                                 <i class="bi bi-person-circle text-primary"></i>
@@ -39,15 +39,14 @@
                         </div>
 
                         <div class="row">
-                            <!-- Username Field -->
+                            <!-- Username input with validation -->
                             <div class="col-md-6 mb-3">
                                 {{ form.username.label(class="form-label fw-bold") }}
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-person"></i>
                                     </span>
-                                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else
-                                    "")) }}
+                                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else "")) }}
                                 </div>
                                 {% if form.username.errors %}
                                 <div class="invalid-feedback">
@@ -58,15 +57,14 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Email Field -->
+                            <!-- Email input with validation -->
                             <div class="col-md-6 mb-3">
                                 {{ form.email.label(class="form-label fw-bold") }}
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-envelope"></i>
                                     </span>
-                                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""))
-                                    }}
+                                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
                                 </div>
                                 {% if form.email.errors %}
                                 <div class="invalid-feedback">
@@ -79,15 +77,14 @@
                         </div>
 
                         <div class="row">
-                            <!-- First Name Field -->
+                            <!-- First name input with validation -->
                             <div class="col-md-6 mb-3">
                                 {{ form.first_name.label(class="form-label fw-bold") }}
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-person-badge"></i>
                                     </span>
-                                    {{ form.first_name(class="form-control" + (" is-invalid" if form.first_name.errors
-                                    else "")) }}
+                                    {{ form.first_name(class="form-control" + (" is-invalid" if form.first_name.errors else "")) }}
                                 </div>
                                 {% if form.first_name.errors %}
                                 <div class="invalid-feedback">
@@ -98,15 +95,14 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Surname Field -->
+                            <!-- Surname input with validation -->
                             <div class="col-md-6 mb-3">
                                 {{ form.surname.label(class="form-label fw-bold") }}
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-person-badge-fill"></i>
                                     </span>
-                                    {{ form.surname(class="form-control" + (" is-invalid" if form.surname.errors else
-                                    "")) }}
+                                    {{ form.surname(class="form-control" + (" is-invalid" if form.surname.errors else "")) }}
                                 </div>
                                 {% if form.surname.errors %}
                                 <div class="invalid-feedback">
@@ -119,15 +115,14 @@
                         </div>
 
                         <div class="row">
-                            <!-- Contact Number Field -->
+                            <!-- Contact number input with validation -->
                             <div class="col-md-6 mb-3">
                                 {{ form.contact_number.label(class="form-label fw-bold") }}
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-phone"></i>
                                     </span>
-                                    {{ form.contact_number(class="form-control" + (" is-invalid" if
-                                    form.contact_number.errors else ""), placeholder="+1 (555) 123-4567") }}
+                                    {{ form.contact_number(class="form-control" + (" is-invalid" if form.contact_number.errors else ""), placeholder="+1 (555) 123-4567") }}
                                 </div>
                                 {% if form.contact_number.errors %}
                                 <div class="invalid-feedback">
@@ -139,16 +134,14 @@
                             </div>
                         </div>
 
-                        <!-- Street Address Field -->
+                        <!-- Street address textarea with validation -->
                         <div class="mb-3">
                             {{ form.street_address.label(class="form-label fw-bold") }}
                             <div class="input-group">
                                 <span class="input-group-text align-self-start mt-1">
                                     <i class="bi bi-geo-alt"></i>
                                 </span>
-                                {{ form.street_address(class="form-control" + (" is-invalid" if
-                                form.street_address.errors else ""), rows="3", placeholder="123 Main Street, City,
-                                State/Province, Country") }}
+                                {{ form.street_address(class="form-control" + (" is-invalid" if form.street_address.errors else ""), rows="3", placeholder="123 Main Street, City, State/Province, Country") }}
                             </div>
                             {% if form.street_address.errors %}
                             <div class="invalid-feedback">
@@ -159,7 +152,7 @@
                             {% endif %}
                         </div>
 
-                        <!-- Form Actions -->
+                        <!-- Form action buttons and info text -->
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <div>
                                 <small class="text-muted">
@@ -180,7 +173,7 @@
                 </div>
             </div>
 
-            <!-- Account Settings Card -->
+            <!-- Account settings card -->
             <div class="card shadow-sm mt-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
@@ -189,6 +182,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <!-- Password change section -->
                         <div class="col-md-6 mb-3">
                             <h6 class="fw-bold">Password</h6>
                             <p class="text-muted small mb-2">Keep your account secure with a strong password</p>
@@ -196,6 +190,7 @@
                                 <i class="bi bi-key me-2"></i>Change Password
                             </a>
                         </div>
+                        <!-- Account status display -->
                         <div class="col-md-6 mb-3">
                             <h6 class="fw-bold">Account Status</h6>
                             <p class="text-muted small mb-2">
@@ -207,7 +202,7 @@
                 </div>
             </div>
 
-            <!-- Danger Zone -->
+            <!-- Danger zone card for account deletion -->
             <div class="card shadow-sm mt-4 border-danger">
                 <div class="card-header bg-danger text-white">
                     <h5 class="mb-0">
@@ -223,6 +218,7 @@
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
+                            <!-- Trigger modal for account deletion confirmation -->
                             <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#deleteAccountModal">
                                 <i class="bi bi-trash me-2"></i>Delete Account
@@ -235,9 +231,8 @@
     </div>
 </div>
 
-<!-- Delete Account Modal -->
-<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel"
-    aria-hidden="true">
+<!-- Modal: Confirm account deletion -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header border-0">
@@ -272,6 +267,7 @@
     </div>
 </div>
 
+<!-- Custom styles for profile page -->
 <style>
     .profile-avatar-large {
         font-size: 6rem;
@@ -315,14 +311,8 @@
         transform: translateY(-1px);
     }
 
-    .btn-outline-secondary:hover {
-        transform: translateY(-1px);
-    }
-
-    .btn-outline-warning:hover {
-        transform: translateY(-1px);
-    }
-
+    .btn-outline-secondary:hover,
+    .btn-outline-warning:hover,
     .btn-outline-danger:hover {
         transform: translateY(-1px);
     }

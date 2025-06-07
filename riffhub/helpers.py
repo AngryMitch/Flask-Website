@@ -21,7 +21,7 @@ def save_image(file):
         return new_filename
     return None
 
-# Block authorised pages
+# Block authorised pages if no user stored in session
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

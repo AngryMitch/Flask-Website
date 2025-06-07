@@ -7,6 +7,7 @@
 <div class="container my-5">
     <h1 class="mb-4">My Events</h1>
 
+    <!-- Navigation buttons: view tickets or create a new event -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <a href="{{ url_for('events.my_tickets') }}" class="btn btn-outline-primary">
             <i class="bi bi-ticket-perforated"></i> View My Tickets
@@ -17,15 +18,17 @@
     </div>
 
     {% if created_events %}
+        <!-- Display a grid of created event cards using a macro -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for event in created_events %}
                 {{ macros.event_card(event, current_date) }}
             {% endfor %}
         </div>
     {% else %}
-        <div class="empty-state">
-            <div class="icon">
-                <i class="bi bi-calendar-x"></i>
+        <!-- Empty state when no events have been created -->
+        <div class="empty-state text-center py-5">
+            <div class="icon mb-3">
+                <i class="bi bi-calendar-x" style="font-size: 3rem;"></i>
             </div>
             <h3>No Events Created</h3>
             <p class="text-muted">You haven't created any events yet.</p>

@@ -1,12 +1,15 @@
 {% macro event_card(event, current_date, show_actions=False) %}
+<!-- Main event card container -->
 <div class="card h-100 event-card shadow-sm">
+
+    <!-- Event image: show uploaded image if available, otherwise fallback to a placeholder -->
     {% if event.image %}
         <img src="{{ url_for('static', filename='uploads/' + event.image) }}" class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
     {% else %}
         <img src="{{ url_for('static', filename='img/event-placeholder.jpg') }}" class="card-img-top" alt="Event placeholder" style="height: 200px; object-fit: cover;">
     {% endif %}
 
-    <!-- Event Status Badge -->
+    <!-- Status badge in top-right: displays Sold Out, Inactive (past), or Open -->
     <div class="event-status position-absolute top-0 end-0 p-2">
         {% if event.is_full %}
             <span class="badge bg-danger">Sold Out</span>
@@ -17,8 +20,12 @@
         {% endif %}
     </div>
 
+    <!-- Card body containing event details -->
     <div class="card-body">
+        <!-- Event title -->
         <h5 class="card-title">{{ event.title }}</h5>
+
+        <!-- Event date, time, and location -->
         <p class="card-text">
             <small class="text-muted">
                 <i class="bi bi-calendar-event me-1"></i> {{ event.date.strftime('%d %b %Y') }}
@@ -33,6 +40,7 @@
             {% endif %}
         </p>
 
+        <!-- Price and ticket availability -->
         <div class="d-flex justify-content-between align-items-center mt-2">
             {% if event.price > 0 %}
                 <span class="badge bg-info text-dark">${{ "%.2f"|format(event.price) }}</span>
@@ -50,6 +58,7 @@
         </div>
     </div>
 
+    <!-- Footer actions: View button always shown; Edit shown only to the organizer if allowed -->
     <div class="card-footer d-flex justify-content-between bg-white">
         <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-sm btn-primary">View Details</a>
         {% if show_actions and (session.user_id == event.organizer_id) %}
@@ -57,18 +66,22 @@
         {% endif %}
     </div>
 
+    <!-- Additional organizer controls: Edit/Delete shown if show_actions is True and user is the organizer -->
     {% if show_actions and (session.user_id == event.organizer_id) %}
     <div class="card-footer bg-white">
         <div class="d-flex justify-content-between">
+            <!-- Edit button with icon -->
             <a href="{{ url_for('events.edit', event_id=event.id) }}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-pencil me-1"></i> Edit
             </a>
+
+            <!-- Delete button triggers confirmation modal -->
             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ event.id }}">
                 <i class="bi bi-trash me-1"></i> Delete
             </button>
         </div>
 
-        <!-- Delete Modal -->
+        <!-- Delete confirmation modal -->
         <div class="modal fade" id="deleteModal{{ event.id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -81,6 +94,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <!-- Delete form -->
                         <form action="{{ url_for('events.delete', event_id=event.id) }}" method="post">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>

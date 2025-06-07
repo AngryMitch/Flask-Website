@@ -2,29 +2,47 @@
 <html lang="en">
 
 <head>
+  <!-- Meta tags for character encoding and responsive behavior -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Dynamic page title, falls back to 'Riffhub' -->
   <title>{% block title %}{% if page_title %}{{ page_title }} - {% endif %}Riffhub{% endblock %}</title>
+
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+  <!-- Bootstrap CSS and Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+  <!-- Page-specific styles block -->
   {% block styles %}{% endblock %}
 </head>
 
 <body class="flex-wrapper">
-  <!-- Navigation -->
+
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
+      <!-- Brand/logo with icon -->
       <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
-        <img src="{{ url_for('static', filename='icons/apple-touch-icon.png') }}" alt="Riffhub"
-          width="32" height="32" class="me-2 rounded-3 border border border-dark">
+        <img src="{{ url_for('static', filename='icons/apple-touch-icon.png') }}" alt="Riffhub" width="32" height="32"
+          class="me-2 rounded-3 border border-dark">
         Riffhub
       </a>
+
+      <!-- Mobile toggle button -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
+
+      <!-- Collapsible nav links -->
       <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Left-aligned nav links -->
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
@@ -41,8 +59,11 @@
           </li>
           {% endif %}
         </ul>
+
+        <!-- Right-aligned auth section -->
         <ul class="navbar-nav">
           {% if session.user_id %}
+          <!-- Dropdown for logged-in users -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle me-1"></i>
@@ -67,6 +88,7 @@
             </ul>
           </li>
           {% else %}
+          <!-- Links for guest users -->
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
           </li>
@@ -79,26 +101,37 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Main page content -->
   <main class="flex-content container mt-4">
-    {% block header %}{% endblock %} {% with messages =
-    get_flashed_messages(with_categories=true) %} {% if messages %} {% for
-    category, message in messages %}
+    {% block header %}{% endblock %}
+
+    <!-- Flash messages (e.g., success, error) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
       {{ message }}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Dynamic content injected by child templates -->
+    {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer -->
+  <!-- Footer section -->
   <footer class="footer py-3 bg-light">
     <div class="container">
       <hr />
       <div class="d-flex justify-content-between align-items-center">
+        <!-- Copyright -->
         <p class="mb-0">
           &copy; {{ now.year }} Riffhub. All rights reserved.
         </p>
+
+        <!-- Quick Links -->
         <div class="col-md-4">
           <h5>Quick Links</h5>
           <ul class="list-unstyled">
@@ -114,11 +147,14 @@
     </div>
   </footer>
 
-  <!-- JavaScript -->
+  <!-- Bootstrap JavaScript bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Placeholder for page-specific scripts -->
   {% block scripts %}{% endblock %}
 </body>
 
+<!-- Scoped styles to ensure full-height layout -->
 <style scoped>
   .flex-wrapper {
     min-height: 100vh;

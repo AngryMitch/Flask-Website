@@ -4,7 +4,10 @@
 
 {% block content %}
 <div class="container mt-5">
+  <!-- Page heading with event title -->
   <h2>Order Tickets - {{ event.title }}</h2>
+
+  <!-- Display event details -->
   <p><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') }}</p>
   <p><strong>Time:</strong> {{ event.time.strftime('%I:%M %p') }}</p>
   <p><strong>Price per ticket:</strong> ${{ '%.2f' | format(event.price) }}</p>
@@ -16,15 +19,18 @@
     {% endif %}
   </p>
 
+  <!-- Ticket ordering form -->
   <form method="POST">
     {{ form.hidden_tag() }}
 
     <div class="mb-3">
+      {# Determine max selectable tickets based on event capacity #}
       {% set max_tickets = event.available_tickets if event.capacity > 0 else 100 %}
       {% if max_tickets < 1 %}
         {% set max_tickets = 100 %}
       {% endif %}
 
+      <!-- Quantity input with dynamic min/max limits -->
       {{ form.quantity.label }}
       {{ form.quantity(
           class="form-control",
@@ -34,10 +40,12 @@
       ) }}
     </div>
 
+    <!-- Display total price label (price per ticket shown) -->
     <div class="mb-3">
       <label class="form-label"><strong>Total:</strong> ${{ '%.2f' | format(event.price) }}</label>
     </div>
 
+    <!-- Submit button and back link -->
     {{ form.submit(class="btn btn-primary") }}
     <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-secondary ms-2">Back to Event</a>
   </form>

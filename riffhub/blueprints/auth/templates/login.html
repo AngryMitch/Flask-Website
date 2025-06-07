@@ -1,34 +1,45 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="container mt-5" style="max-width: 400px;">
+    <!-- Login Form Header -->
     <h2 class="mb-4 text-center">Login</h2>
+    
+    <!-- Login Form -->
     <form method="POST" action="{{ url_for('auth.login') }}">
-        {{ form.csrf_token }}
+        {{ form.csrf_token }}  {# CSRF protection token #}
+        
+        <!-- Username Input -->
         <div class="mb-3">
             <label for="{{ form.username.id }}" class="form-label">Username</label>
             {{ form.username(class="form-control") }}
             {% if form.username.errors %}
                 <div class="text-danger small">
                     {% for error in form.username.errors %}
-                        {{ error }}
+                        {{ error }}  {# Display username validation errors #}
                     {% endfor %}
                 </div>
             {% endif %}
         </div>
+        
+        <!-- Password Input -->
         <div class="mb-3">
             <label for="{{ form.password.id }}" class="form-label">Password</label>
             {{ form.password(class="form-control") }}
             {% if form.password.errors %}
                 <div class="text-danger small">
                     {% for error in form.password.errors %}
-                        {{ error }}
+                        {{ error }}  {# Display password validation errors #}
                     {% endfor %}
                 </div>
             {% endif %}
         </div>
+        
+        <!-- Submit Button -->
         {{ form.submit(class="btn btn-primary w-100") }}
     </form>
 
+    <!-- Registration Link -->
     <div class="text-center mt-3">
         <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
     </div>

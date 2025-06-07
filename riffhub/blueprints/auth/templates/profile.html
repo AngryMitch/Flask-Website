@@ -5,14 +5,16 @@
 
 {% block content %}
 <div class="container my-5">
-    <!-- Profile Header -->
+    <!-- Profile Header: User avatar, username, contact info, and action buttons -->
     <div class="profile-header mb-5">
         <div class="row align-items-center">
+            <!-- Avatar Icon -->
             <div class="col-md-2 text-center">
                 <div class="profile-avatar">
                     <i class="bi bi-person-circle"></i>
                 </div>
             </div>
+            <!-- User Info -->
             <div class="col-md-7">
                 <h1 class="mb-2">{{ user.username }}</h1>
                 <p class="text-white mb-1">
@@ -28,6 +30,7 @@
                     <i class="bi bi-calendar-check me-2"></i>Member since {{ user.created_at.strftime('%B %Y') }}
                 </p>
             </div>
+            <!-- Action Buttons: Edit profile and change password -->
             <div class="col-md-3">
                 <div class="d-grid gap-2">
                     <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-light">
@@ -41,7 +44,7 @@
         </div>
     </div>
 
-    <!-- User Information Card -->
+    <!-- Contact Information Card: Detailed user info display -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
@@ -52,22 +55,27 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <!-- Full Name -->
                         <div class="col-md-6">
                             <h6 class="fw-bold">Full Name</h6>
                             <p class="text-muted">{{ user.full_name }}</p>
                         </div>
+                        <!-- Email -->
                         <div class="col-md-6">
                             <h6 class="fw-bold">Email</h6>
                             <p class="text-muted">{{ user.email }}</p>
                         </div>
+                        <!-- Contact Number -->
                         <div class="col-md-6">
                             <h6 class="fw-bold">Contact Number</h6>
                             <p class="text-muted">{{ user.contact_number }}</p>
                         </div>
+                        <!-- Membership Date -->
                         <div class="col-md-6">
                             <h6 class="fw-bold">Member Since</h6>
                             <p class="text-muted">{{ user.created_at.strftime('%B %d, %Y') }}</p>
                         </div>
+                        <!-- Street Address -->
                         <div class="col-12">
                             <h6 class="fw-bold">Address</h6>
                             <p class="text-muted">{{ user.street_address }}</p>
@@ -78,7 +86,7 @@
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- User Stats Cards: Events organized, tickets sold, and orders placed -->
     <div class="row g-4 mb-5">
         <div class="col-md-4">
             <div class="card text-center h-100">
@@ -107,7 +115,7 @@
     </div>
 
     <div class="row">
-        <!-- Left Column -->
+        <!-- Left Column: Recent events and orders -->
         <div class="col-lg-8">
             <!-- Recent Events Organized -->
             <div class="card mb-4">
@@ -124,6 +132,7 @@
                     {% for event in recent_events %}
                     <div class="border rounded p-3 mb-3">
                         <div class="row align-items-center">
+                            <!-- Event details: title, date, time, location -->
                             <div class="col-md-8">
                                 <h6 class="mb-1">{{ event.title }}</h6>
                                 <small class="text-muted">
@@ -136,6 +145,7 @@
                                 </small>
                                 {% endif %}
                             </div>
+                            <!-- Tickets sold and remaining capacity -->
                             <div class="col-md-4 text-end">
                                 <span class="badge bg-primary">{{ event.ticket_count }} tickets sold</span>
                                 {% if event.capacity > 0 %}
@@ -145,6 +155,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                    <!-- Link to view all events if more than 5 -->
                     {% if events_organized > 5 %}
                     <div class="text-center">
                         <a href="{{ url_for('events.my_events') }}" class="btn btn-outline-primary">
@@ -153,6 +164,7 @@
                     </div>
                     {% endif %}
                     {% else %}
+                    <!-- Empty state when no events -->
                     <div class="empty-state">
                         <div class="icon">
                             <i class="bi bi-calendar-x"></i>
@@ -178,12 +190,14 @@
                     {% for order in orders[:5] %}
                     <div class="border rounded p-3 mb-3">
                         <div class="row align-items-center">
+                            <!-- Order info: ID and order date -->
                             <div class="col-md-8">
                                 <h6 class="mb-1">Order #{{ order.id }}</h6>
                                 <small class="text-muted">
                                     <i class="bi bi-calendar me-1"></i>{{ order.order_date.strftime('%B %d, %Y at %I:%M
                                     %p') }}
                                 </small>
+                                <!-- Tickets per order -->
                                 <div class="mt-1">
                                     {% for ticket in order.tickets %}
                                     <small class="d-block text-muted">
@@ -192,6 +206,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                            <!-- Order status and total tickets -->
                             <div class="col-md-4 text-end">
                                 <span class="badge bg-{{ 'success' if order.status == 'completed' else 'warning' }}">
                                     {{ order.status.title() }}
@@ -201,6 +216,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                    <!-- Link to view all orders if more than 5 -->
                     {% if orders|length > 5 %}
                     <div class="text-center">
                         <a href="{{ url_for('events.my_tickets') }}" class="btn btn-outline-primary">
@@ -209,6 +225,7 @@
                     </div>
                     {% endif %}
                     {% else %}
+                    <!-- Empty state when no orders -->
                     <div class="empty-state">
                         <div class="icon">
                             <i class="bi bi-ticket-perforated-fill"></i>
@@ -222,9 +239,9 @@
             </div>
         </div>
 
-        <!-- Right Column -->
+        <!-- Right Column: User's genres and recent comments -->
         <div class="col-lg-4">
-            <!-- Genres -->
+            <!-- Genres Card -->
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
@@ -242,6 +259,7 @@
                         {% endfor %}
                     </div>
                     {% else %}
+                    <!-- Empty state when no genres -->
                     <div class="empty-state">
                         <div class="icon">
                             <i class="bi bi-tags-fill"></i>
@@ -254,7 +272,7 @@
                 </div>
             </div>
 
-            <!-- Recent Comments -->
+            <!-- Recent Comments Card: Shows latest user comments -->
             {% if recent_comments %}
             <div class="card mb-4">
                 <div class="card-header">
@@ -278,6 +296,7 @@
 </div>
 
 <style>
+    /* Profile header styling: gradient background with white text */
     .profile-header {
         background: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%);
         color: white;
@@ -285,51 +304,60 @@
         border-radius: 1rem;
     }
 
+    /* Avatar icon size and color */
     .profile-avatar {
         font-size: 4rem;
         color: rgba(255, 255, 255, 0.9);
     }
 
+    /* Statistic numbers styling */
     .stat-number {
         font-size: 2.5rem;
         font-weight: bold;
         display: block;
     }
 
+    /* Statistic labels styling */
     .stat-label {
         font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
+    /* Empty state styling: centered text and icon */
     .empty-state {
         text-align: center;
         padding: 3rem 1rem;
     }
 
+    /* Icon size and color in empty states */
     .empty-state .icon {
         font-size: 4rem;
         color: #dee2e6;
         margin-bottom: 1rem;
     }
 
+    /* Empty state heading color and spacing */
     .empty-state h3 {
         color: #6c757d;
         margin-bottom: 0.5rem;
     }
 
+    /* Card general styling: no border, rounded corners, subtle shadow */
     .card {
         border: none;
         border-radius: 1rem;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
 
+    /* Card header background and border styling */
     .card-header {
         background-color: #f8f9fa;
         border-bottom: 1px solid rgba(0, 0, 0, .125);
         border-radius: 1rem 1rem 0 0 !important;
     }
 
+    /* Responsive: center profile header text on small screens */
     @media (max-width: 768px) {
         .profile-header {
             text-align: center;
@@ -340,4 +368,4 @@
         }
     }
 </style>
-{% endblock %}s
+{% endblock %}

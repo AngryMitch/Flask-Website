@@ -8,20 +8,26 @@
     <div class="col-lg-8">
       <div class="card shadow-sm border-0">
         <div class="card-body p-5">
+          <!-- Page heading -->
           <h2 class="mb-4 text-center">Create a New Event</h2>
-          <form method="POST" enctype="multipart/form-data" novalidate>
-            {{ form.hidden_tag() }}
 
+          <!-- Event creation form -->
+          <form method="POST" enctype="multipart/form-data" novalidate>
+            {{ form.hidden_tag() }}  {# CSRF token and hidden fields #}
+
+            <!-- Event Title input -->
             <div class="mb-3">
               {{ form.title.label(class="form-label fw-semibold") }}
               {{ form.title(class="form-control", placeholder="Event Title") }}
             </div>
 
+            <!-- Event Description textarea -->
             <div class="mb-3">
               {{ form.description.label(class="form-label fw-semibold") }}
               {{ form.description(class="form-control", rows="4", placeholder="Event Description (optional)") }}
             </div>
 
+            <!-- Genre select dropdown with link to manage genres -->
             <div class="mb-3">
               {{ form.genre.label(class="form-label fw-semibold") }}
               {{ form.genre(class="form-select") }}
@@ -31,6 +37,7 @@
               </small>
             </div>
 
+            <!-- Date and Time inputs side-by-side -->
             <div class="row">
               <div class="col-md-6 mb-3">
                 {{ form.date.label(class="form-label fw-semibold") }}
@@ -42,11 +49,13 @@
               </div>
             </div>
 
+            <!-- Location input -->
             <div class="mb-3">
               {{ form.location.label(class="form-label fw-semibold") }}
               {{ form.location(class="form-control", placeholder="Venue or Address") }}
             </div>
 
+            <!-- Capacity and Price inputs side-by-side -->
             <div class="row">
               <div class="col-md-6 mb-3">
                 {{ form.capacity.label(class="form-label fw-semibold") }}
@@ -58,11 +67,13 @@
               </div>
             </div>
 
+            <!-- Image upload input -->
             <div class="mb-4">
               {{ form.image.label(class="form-label fw-semibold") }}
               {{ form.image(class="form-control") }}
             </div>
 
+            <!-- Submit button -->
             <div class="d-grid">
               <button type="submit" class="btn btn-primary btn-lg">
                 <i class="bi bi-calendar-plus me-2"></i> Create Event

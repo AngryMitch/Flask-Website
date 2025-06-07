@@ -5,33 +5,42 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Edit Event</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}  {# <-- This includes CSRF token #}
 
+    <!-- Event edit form with file upload enabled -->
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}  {# CSRF token and hidden fields #}
+
+        <!-- Title input -->
         <div class="mb-3">
             {{ form.title.label }} {{ form.title(class="form-control") }}
         </div>
 
+        <!-- Description textarea -->
         <div class="mb-3">
             {{ form.description.label }} {{ form.description(class="form-control", rows="5") }}
         </div>
 
+        <!-- Date input -->
         <div class="mb-3">
             {{ form.date.label }} {{ form.date(class="form-control") }}
         </div>
 
+        <!-- Time input -->
         <div class="mb-3">
             {{ form.time.label }} {{ form.time(class="form-control") }}
         </div>
 
+        <!-- Location input -->
         <div class="mb-3">
             {{ form.location.label }} {{ form.location(class="form-control") }}
         </div>
 
+        <!-- Capacity input -->
         <div class="mb-3">
             {{ form.capacity.label }} {{ form.capacity(class="form-control") }}
         </div>
 
+        <!-- Image upload input and preview -->
         <div class="mb-3">
             {{ form.image.label }} {{ form.image(class="form-control") }}
             {% if event.image %}
@@ -41,6 +50,7 @@
             {% endif %}
         </div>
 
+        <!-- Submit button -->
         <button type="submit" class="btn btn-primary">Update Event</button>
     </form>
 </div>
